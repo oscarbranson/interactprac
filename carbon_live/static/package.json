@@ -1,0 +1,35 @@
+{
+  "name": "oceanlive",
+  "version": "0.0.1",
+  "description": "Interactive Ocean Box Model",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack -p --progress --config webpack.config.js",
+    "dev-build": "webpack --progress -d --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --progress -d --config webpack.config.js --watch"
+  },
+  "author": "Oscar Branson",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.2",
+    "d3": "^6.1.0",
+    "d3-axis": "^2.0.0",
+    "jquery": "^3.5.1",
+    "mini-css-extract-plugin": "^0.11.0",
+    "rc-slider": "^9.3.1",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.3.0",
+    "react-dom": "^16.13.1",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.12"
+  }
+}

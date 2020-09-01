@@ -1,0 +1,75 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-size: 15px !important;
+    color: #040404 !important;
+    font-family: sans-serif !important;
+    background-color: #ffffff;
+  }
+  
+  #content {
+    height: 100vh;
+    width: 100vw;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+  
+  svg path {
+    fill: none;
+    stroke: #00cc99;
+    stroke-width: 2px;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #bdc3c7;
+    shape-rendering: crispEdges;
+}
+
+#main_panel {
+  display: inline-block;
+  height: 100%;
+  width: 100%
+}
+
+#graph_container {
+  display: block;
+  padding-left: 4em;
+  /* padding-left: 10vh; */
+  /* padding-top: 20vh; */
+}
+
+.graph {
+  width: 80%;
+  height: 15%;
+  /* border-style: groove; */
+}
+
+/* Controls */
+#control_layout {
+  padding-left: 4em;
+  padding-top: 2em;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.control_group {
+  width: 10%;
+  display: inline-block;
+  justify-content: center;
+  vertical-align: top;
+  padding-top: 10px;
+  text-align: center;
+}
+
+button {
+  width: 90%;
+  margin: 3 auto;
+}
+
+.rc-slider {
+  width: 90%;
+  margin: 3 auto;
+}
