@@ -1,11 +1,19 @@
 import React from 'react';
 import { start_state, step, var_info} from './TwoBox';
+// import { start_state, step, var_info} from './ThreeBox';
 import { Button } from './ControlElements';
 // import { Graph } from './Graph';
 import { GraphPane } from './GraphPane';
 
 const frameTime = 50;
 const npoints = 100;
+
+const plot_variables = ['PO4_surf', 'DIC_surf', 'TA_surf']
+// const  plot_variables = [
+//     'PO4_hilat', 'PO4_lolat', 'PO4_deep',
+//     'DIC_hilat', 'DIC_lolat',
+//     'TA_hilat', 'TA_lolat'
+// ]
 
 export class Model extends React.Component {
     constructor(props) {
@@ -86,14 +94,12 @@ export class Model extends React.Component {
     return (
         <div id='main_panel'>
             <div className="control-container">
-            <h1>{this.state.now.PO4_surf}</h1>
             <Button onClick={this.toggleSimulation} label="Start/Stop"/>
-            {/* <Button onClick={this.stopSimulation} label="STOP!"/> */}
             <Button onClick={this.resetModel} label="reset"/>
             </div>
             < GraphPane 
                 data = {this.state.history}
-                variables = {['PO4_surf', 'DIC_surf', 'TA_surf']}
+                variables = {plot_variables}
                 var_info = {var_info}
                 npoints = {npoints}
             />

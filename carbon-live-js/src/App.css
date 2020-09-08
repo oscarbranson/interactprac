@@ -11,8 +11,8 @@ header {
 }
 
 #root {
-  height: 95vh;
-  width: 95vw;
+  height: 100vh;
+  width: 100vw;
 }
 
 .App {
@@ -29,8 +29,8 @@ body, html {
 }
 
 #main_panel {
-  height: 100%;
-  width: 100%
+  height: 95%;
+  width: 95%
 }
 
 .control-container {
@@ -41,18 +41,19 @@ body, html {
 
 .graph-container {
   min-height: 75vh;
+  min-width: 90vw;
   display: flex;
-  /* padding-left: 4em; */
   flex-direction: column;
-  align-items: center;
+  /* padding-left: 4em; */
+  align-items: stretch;
   justify-content: center;
   /* min-width: 100vh; */
 
 }
 
 .graph {
-  width: 90%;
-  height: 15vh;
+  /* align-items: stretch; */
+  height: 12vh;
   /* border-style: groove; */
 }
 

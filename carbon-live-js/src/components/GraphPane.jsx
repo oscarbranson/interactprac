@@ -18,6 +18,7 @@ export class GraphPane extends React.Component {
                     min = {info['ymin']}
                     max = {info['ymax']}
                     param = {key}
+                    key = {key}
                     npoints = {this.props.npoints}
                     ylabel = {info['label']}
                     precision = {info['precision']}
