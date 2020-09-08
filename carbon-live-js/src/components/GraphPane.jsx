@@ -4,20 +4,23 @@ import { Graph } from './Graph'
 export class GraphPane extends React.Component {
     // constructor(props) {
     //     super(props)
+    //     console.log(this.props)
     // }
 
     render () {
         let graphs = [];
-        for (let key in this.props.variables) {
+        for (let key of this.props.variables) {
+            let info = this.props.var_info[key]
             graphs.push(
                 <Graph 
                     data = {this.props.data}
                     id = {key}
-                    min = {this.props.variables[key][0]}
-                    max = {this.props.variables[key][1]}
+                    min = {info['ymin']}
+                    max = {info['ymax']}
                     param = {key}
                     npoints = {this.props.npoints}
-                    ylabel = {this.props.labels[key]}
+                    ylabel = {info['label']}
+                    precision = {info['precision']}
                 />
             )
         }

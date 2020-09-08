@@ -42,20 +42,81 @@ export const start_state = {
     'TA_surf': 2000
   };
 
-export const var_names = {
-  'vmix': 'Mixing Rate (m3 / yr)',
-  'tau': 'Productivity (tau)',
-  'percent_CaCO3': '% CaCO3',
-  'total_PO4': 'Total [PO4]',
-  'total_DIC': 'Total [DIC]',
-  'total_TA': 'Total Alkalinity',
-  'vol_deep': 'Deep Ocean Volume (m3)',
-  'vol_surf': 'Surface Ocean Volume (m3)',
-  'PO4_surf': 'Surface [PO4]',
-  'PO4_deep': 'Deep [PO4]',
-  'DIC_surf': 'Surface [DIC]',
-  'TA_surf': 'Surface Alkalinity'
-};
+export const var_info = {
+    // variable: [label, min, max]
+    'vmix': {
+        label:'Mixing Rate (m3 / yr)', 
+        ymin: null, 
+        ymax: null,
+        precision: null
+    },
+    'tau': {
+        label: 'Productivity (tau)',
+        ymin: null,
+        ymax: null,
+        precision: null
+    },
+    'percent_CaCO3': {
+        label: '% CaCO3',
+        ymin: 0,
+        ymax: 100,
+        precision: 1
+    },
+    'total_PO4': {
+        label: 'Total [PO4]',
+        ymin: 2,
+        ymax: 3,
+        precision: 3
+    },
+    'total_DIC': {
+        label: 'Total [DIC]',
+        ymin: 1800,
+        ymax: 2000,
+        precision: 4
+    },
+    'total_TA': {
+        label: 'Total Alkalinity',
+        ymin: 2200,
+        ymax: 2400,
+        precision: 4
+    },
+    'vol_deep': {
+        label: 'Deep Ocean Volume (m3)',
+        ymin: null,
+        ymax: null,
+        precision: null
+    },
+    'vol_surf': {
+        label: 'Surface Ocean Volume (m3)',
+        ymin: null,
+        ymax: null,
+        precision: null
+    },
+    'PO4_surf': {
+        label: 'Surface [PO4]',
+        ymin: 0,
+        ymax: 1,
+        precision: 3
+    },
+    'PO4_deep': {
+        label: 'Deep [PO4]',
+        ymin: 2.4,
+        ymax: 2.6,
+        precision: 3
+    },
+    'DIC_surf': {
+        label: 'Surface [DIC]',
+        ymin: 1800,
+        ymax: 2000,
+        precision: 4
+    },
+    'TA_surf': {
+        label: 'Surface Alkalinity',
+        ymin: 2200,
+        ymax: 2400,
+        precision: 4
+    },
+  };
 
 export function step(state) {
     let newState = Object.assign({}, state);

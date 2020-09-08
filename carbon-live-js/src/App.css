@@ -37,6 +37,8 @@ body, html {
   min-height: 15vh;
 }
 
+/* Graphs */
+
 .graph-container {
   min-height: 75vh;
   display: flex;
@@ -71,6 +73,9 @@ svg path {
   fill: lightgray;
 }
 
+.data-label {
+  fill: lightgray
+}
 
 
 .button {

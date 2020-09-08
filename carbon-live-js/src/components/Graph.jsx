@@ -70,6 +70,15 @@ export class Graph extends Component {
       .text(this.props.ylabel)
       .attr("class", "ylabel")
 
+    this.graph.dataLabel = this.graph.svg.append("text")
+      .data([this.props.data[this.props.param][this.props.npoints - 1].toPrecision(this.props.precision)])
+      .attr("x", width)
+      .attr("y", margin)
+      .style("text-anchor", "end")
+      .attr("class", "data-label")
+      .text(function(d) {return d})
+      // .text("test")
+
     this.graph.line = d3.line()
       .x((_, i) => this.graph.xScale(i))
       .y((d) => this.graph.yScale(d))
@@ -83,6 +92,12 @@ export class Graph extends Component {
     this.graph.svg.selectAll('path#dataline')
     .data([this.props.data[this.props.param]])
     .attr('d', this.graph.line)
+  }
+
+  updateDataLabel() {
+    this.graph.dataLabel
+      .data([this.props.data[this.props.param][this.props.npoints - 1].toPrecision(this.props.precision)])
+      .text(function(d) { return d })
   }
 
   updateYlim() {
@@ -102,6 +117,7 @@ export class Graph extends Component {
   componentDidUpdate() {
     this.updateYlim()
     this.updateLine()
+    this.updateDataLabel()
   }
 
   render() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { start_state, step, var_names } from './TwoBox';
+import { start_state, step, var_info} from './TwoBox';
 import { Button } from './ControlElements';
 // import { Graph } from './Graph';
 import { GraphPane } from './GraphPane';
@@ -28,6 +28,7 @@ export class Model extends React.Component {
         this.startSimulation = this.startSimulation.bind(this)
         this.stopSimulation = this.stopSimulation.bind(this)
         this.resetModel = this.resetModel.bind(this)
+        this.toggleSimulation = this.toggleSimulation.bind(this)
     }
 
     startSimulation() {
@@ -41,6 +42,14 @@ export class Model extends React.Component {
     stopSimulation() {
         clearInterval(this.interval);
         this.interval = null;
+    }
+
+    toggleSimulation() {
+        if (this.interval === null) {
+            this.startSimulation()
+        }  else {
+            this.stopSimulation()
+        }
     }
 
     resetModel() {
@@ -78,18 +87,15 @@ export class Model extends React.Component {
         <div id='main_panel'>
             <div className="control-container">
             <h1>{this.state.now.PO4_surf}</h1>
-            <Button onClick={this.startSimulation} label="Start"/>
-            <Button onClick={this.stopSimulation} label="STOP!"/>
+            <Button onClick={this.toggleSimulation} label="Start/Stop"/>
+            {/* <Button onClick={this.stopSimulation} label="STOP!"/> */}
             <Button onClick={this.resetModel} label="reset"/>
             </div>
             < GraphPane 
                 data = {this.state.history}
-                variables = {{
-                    PO4_surf: [0,1],
-                    DIC_surf: [1800, 2000], 
-                    TA_surf: [2000, 2200]}}
+                variables = {['PO4_surf', 'DIC_surf', 'TA_surf']}
+                var_info = {var_info}
                 npoints = {npoints}
-                labels = {var_names}
             />
         </div>
         )
