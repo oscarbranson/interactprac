@@ -4,16 +4,16 @@ import { start_state, step, var_info} from './ThreeBox';
 import { Button } from './ControlElements';
 // import { Graph } from './Graph';
 import { GraphPane } from './GraphPane';
-import { calc_csys } from './csys'
+import { calc_csys, calc_DIC, give_DIC_TA, calc_Ks } from './csys'
 
 const frameTime = 50;
 const npoints = 100;
 
-// const plot_variables = ['PO4_surf', 'DIC_surf', 'TA_surf']
+// const plot_variables = ['PO4_surf', 'DIC_surf', 'DIC_deep', 'TA_surf', 'TA_deep']
 const  plot_variables = [
-    'PO4_hilat', 'PO4_lolat', 'PO4_deep',
-    'DIC_hilat', 'DIC_lolat',
-    'TA_hilat', 'TA_lolat'
+    // 'PO4_hilat', 'PO4_lolat', 'PO4_deep',
+    'DIC_hilat', 'DIC_lolat', 'DIC_deep',
+    'TA_hilat', 'TA_lolat', 'TA_deep'
 ]
 
 export class Model extends React.Component {
@@ -39,7 +39,12 @@ export class Model extends React.Component {
         this.resetModel = this.resetModel.bind(this)
         this.toggleSimulation = this.toggleSimulation.bind(this)
 
-        console.log(calc_csys({DIC: 1980, TA: 2300, Sal: 34.78, Temp: 25}))
+        let sw = calc_csys({DIC: 1980, TA: 2300, Sal: 34.78, Temp: 25})
+        console.log(sw)
+        let Ks = calc_Ks({Sal: 34.78, Tc: 25})
+        let H = give_DIC_TA({DIC: 1980e-6, TA: 2300e-6, Sal: 34.78, Ks: Ks})
+        console.log(-Math.log10(H))
+        // console.log(calc_DIC({fCO2: sw.fCO2, TA: 2300, Sal: 34.78, Temp: 25}))
     }
 
     startSimulation() {
