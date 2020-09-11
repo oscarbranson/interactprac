@@ -21,6 +21,7 @@ function dPO4_lolat({PO4_deep, PO4_lolat, vthermo, tau_lolat, vol_lolat}) {
             (PO4_lolat * vol_lolat / tau_lolat)) / vol_lolat
         }
 
+// Replace this with differential equations. Stoichiometric removal flux, mixing, atmospheric equilibration.
 function calc_DIC_surf({PO4_deep, PO4_surf, percent_CaCO3, total_DIC}) {
     let delta_PO4 = PO4_deep - PO4_surf;
     
@@ -30,6 +31,7 @@ function calc_DIC_surf({PO4_deep, PO4_surf, percent_CaCO3, total_DIC}) {
     return total_DIC - organic - CaCO3
 }
 
+// Replace this with differential equations. Stoichiometric removal flux, mixing.
 function calc_TA_surf({PO4_deep, PO4_surf, percent_CaCO3, total_TA}) {
     let delta_PO4 = PO4_deep - PO4_surf;
     
@@ -37,6 +39,12 @@ function calc_TA_surf({PO4_deep, PO4_surf, percent_CaCO3, total_TA}) {
     let CaCO3 = 2 * 106 * percent_CaCO3 * delta_PO4 / 100;
     
     return total_TA - organic - CaCO3
+}
+
+// Replace this with differential equation. Remineralisation, mixing, sedimentation -- lysocline? 
+function calc_X_deep({X_hilat, X_lolat, X_total, vol_hilat, vol_lolat, vol_deep}) {
+    let vol_total = vol_hilat + vol_lolat + vol_deep;
+    return (X_total * vol_total - X_hilat * vol_hilat - X_lolat * vol_lolat) / vol_deep
 }
 
 export const start_state = {
@@ -54,10 +62,12 @@ export const start_state = {
     'PO4_lolat': 0,
     'PO4_hilat': 0,
     'PO4_deep': 2.5,
-    'DIC_lolat': 2000,
-    'DIC_hilat': 2000,
-    'TA_lolat': 2000,
-    'TA_hilat': 2000
+    'DIC_lolat': 2140,
+    'DIC_hilat': 2140,
+    'DIC_deep': 2140,
+    'TA_lolat': 2400,
+    'TA_hilat': 2400,
+    'TA_deep': 2400
   };
 
 export const var_info = {
@@ -158,6 +168,12 @@ export const var_info = {
         ymax: 2000,
         precision: 4
     },
+    'DIC_deep': {
+        label: 'Deep [DIC]',
+        ymin: 2130,
+        ymax: 2150,
+        precision: 5
+    },
     'TA_lolat': {
         label: 'Low Lat. Surface Alkalinity',
         ymin: 2200,
@@ -169,6 +185,12 @@ export const var_info = {
         ymin: 2200,
         ymax: 2400,
         precision: 4
+    },
+    'TA_deep': {
+        label: 'Deep Alkalinity',
+        ymin: 2390,
+        ymax: 2410,
+        precision: 5
     },
   };
 
@@ -220,6 +242,15 @@ export function step(state) {
         total_DIC: state['total_DIC']
     });
 
+    newState['DIC_deep'] = calc_X_deep({
+        X_hilat: newState['DIC_hilat'],
+        X_lolat: newState['DIC_lolat'],
+        X_total: newState['total_DIC'],
+        vol_hilat: newState['vol_hilat'],
+        vol_lolat: newState['vol_lolat'],
+        vol_deep: newState['vol_deep'],
+    });
+
     newState['TA_lolat'] = calc_TA_surf({
         PO4_deep: newState['PO4_deep'],
         PO4_surf: newState['PO4_lolat'],
@@ -232,6 +263,15 @@ export function step(state) {
         PO4_surf: newState['PO4_hilat'],
         percent_CaCO3: state['percent_CaCO3'],
         total_TA: state['total_TA']
+    });
+
+    newState['TA_deep'] = calc_X_deep({
+        X_hilat: newState['TA_hilat'],
+        X_lolat: newState['TA_lolat'],
+        X_total: newState['total_TA'],
+        vol_hilat: newState['vol_hilat'],
+        vol_lolat: newState['vol_lolat'],
+        vol_deep: newState['vol_deep'],
     });
 
     return newState

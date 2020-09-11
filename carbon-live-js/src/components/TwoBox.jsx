@@ -9,6 +9,7 @@ function dPO4_surf({PO4_deep, PO4_surf, vmix, tau, vol_surf}) {
     (PO4_surf * vol_surf / tau)) / vol_surf
 }
 
+// Replace this with differential equations. Stoichiometric removal flux, mixing, atmospheric equilibration.
 function calc_DIC_surf({PO4_deep, PO4_surf, percent_CaCO3, total_DIC}) {
     let delta_PO4 = PO4_deep - PO4_surf;
     
@@ -18,6 +19,7 @@ function calc_DIC_surf({PO4_deep, PO4_surf, percent_CaCO3, total_DIC}) {
     return total_DIC - organic - CaCO3
 }
 
+// Replace this with differential equations. Stoichiometric removal flux, mixing.
 function calc_TA_surf({PO4_deep, PO4_surf, percent_CaCO3, total_TA}) {
     let delta_PO4 = PO4_deep - PO4_surf;
     
@@ -25,6 +27,12 @@ function calc_TA_surf({PO4_deep, PO4_surf, percent_CaCO3, total_TA}) {
     let CaCO3 = 2 * 106 * percent_CaCO3 * delta_PO4 / 100;
     
     return total_TA - organic - CaCO3
+}
+
+// Replace this with differential equation. Remineralisation, mixing, sedimentation -- lysocline?
+function calc_X_deep({X_surf, X_total, vol_surf, vol_deep}) {
+    let vol_total = vol_surf + vol_deep;
+    return (X_total * vol_total - X_surf * vol_surf) / vol_deep
 }
 
 export const start_state = {
@@ -38,8 +46,10 @@ export const start_state = {
     'vol_surf': 1.31e16,
     'PO4_surf': 0,
     'PO4_deep': 2.5,
-    'DIC_surf': 2000,
-    'TA_surf': 2000
+    'DIC_surf': 2140,
+    'DIC_deep': 2140,
+    'TA_surf': 2400,
+    'TA_deep': 2400
   };
 
 export const var_info = {
@@ -110,11 +120,23 @@ export const var_info = {
         ymax: 2000,
         precision: 4
     },
+    'DIC_deep': {
+        label: 'Deep [DIC]',
+        ymin: 2130,
+        ymax: 2150,
+        precision: 5
+    },
     'TA_surf': {
         label: 'Surface Alkalinity',
         ymin: 2200,
         ymax: 2400,
         precision: 4
+    },
+    'TA_deep': {
+        label: 'Deep Alkalinity',
+        ymin: 2390,
+        ymax: 2410,
+        precision: 5
     },
   };
 
@@ -151,6 +173,21 @@ export function step(state) {
         percent_CaCO3: state['percent_CaCO3'],
         total_TA: state['total_TA']
     });
+
+    newState['TA_deep'] = calc_X_deep({
+        X_surf: newState['TA_surf'],
+        X_total: newState['total_TA'],
+        vol_surf: state['vol_surf'],
+        vol_deep: state['vol_deep']
+    });
+
+    newState['DIC_deep'] = calc_X_deep({
+        X_surf: newState['DIC_surf'],
+        X_total: newState['total_DIC'],
+        vol_surf: state['vol_surf'],
+        vol_deep: state['vol_deep']
+    })
+
 
     return newState
 }
