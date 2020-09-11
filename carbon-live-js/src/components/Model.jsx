@@ -1,19 +1,20 @@
 import React from 'react';
-import { start_state, step, var_info} from './TwoBox';
-// import { start_state, step, var_info} from './ThreeBox';
+// import { start_state, step, var_info} from './TwoBox';
+import { start_state, step, var_info} from './ThreeBox';
 import { Button } from './ControlElements';
 // import { Graph } from './Graph';
 import { GraphPane } from './GraphPane';
+import { calc_csys } from './csys'
 
 const frameTime = 50;
 const npoints = 100;
 
-const plot_variables = ['PO4_surf', 'DIC_surf', 'TA_surf']
-// const  plot_variables = [
-//     'PO4_hilat', 'PO4_lolat', 'PO4_deep',
-//     'DIC_hilat', 'DIC_lolat',
-//     'TA_hilat', 'TA_lolat'
-// ]
+// const plot_variables = ['PO4_surf', 'DIC_surf', 'TA_surf']
+const  plot_variables = [
+    'PO4_hilat', 'PO4_lolat', 'PO4_deep',
+    'DIC_hilat', 'DIC_lolat',
+    'TA_hilat', 'TA_lolat'
+]
 
 export class Model extends React.Component {
     constructor(props) {
@@ -37,6 +38,8 @@ export class Model extends React.Component {
         this.stopSimulation = this.stopSimulation.bind(this)
         this.resetModel = this.resetModel.bind(this)
         this.toggleSimulation = this.toggleSimulation.bind(this)
+
+        console.log(calc_csys({DIC: 1980, TA: 2300, Sal: 34.78, Temp: 25}))
     }
 
     startSimulation() {
