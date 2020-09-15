@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
+import { ParamDropdown } from './Dropdown'
 
 const divid = "threebox"
 
 export class Schematic extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   // this.interval = null;
-  // }
 
   getLimits() {
     let gMin = Math.min(
@@ -88,6 +85,10 @@ export class Schematic extends Component {
           top: "20%", left: 0, width: "40%", height: "40%", textAlign: "left", color: text_hilat,
           backgroundColor: col_hilat
           }}>{val_hilat.toPrecision(this.props.var_info[this.props.param + '_hilat']['precision'])}</div>
+        <ParamDropdown className='dropdown'
+                        params={['pH', 'DIC', 'TA', 'fCO2', 'temp', 'sal', 'PO4', 'CO3', 'HCO3', 'c']}
+                        param={this.props.param} 
+                        handleSelect={this.props.handleDropdownSelect}/>
       </div>
     )
   }

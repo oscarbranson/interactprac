@@ -2,10 +2,7 @@ import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export class SchematicDropdown extends React.Component {
-    // constructor(props) {    
-    //     super(props)
-    // }
+export class ParamDropdown extends React.Component {
 
     render() {
         let opts = [];
@@ -21,7 +18,7 @@ export class SchematicDropdown extends React.Component {
 
         return (
             <Dropdown onSelect={this.props.handleSelect} size="sm">
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle variant="secondary" id="dropdown-secondary">
                 {this.props.param}
             </Dropdown.Toggle>
             <Dropdown.Menu>
