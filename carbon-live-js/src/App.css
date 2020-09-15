@@ -33,8 +33,34 @@ body, html {
   width: 95%
 }
 
+/* Top Bar */
+.top-bar {
+  display: flex;
+}
+
+/* Controls */
 .control-container {
+  display: flex;
+  align-items: center;
   min-height: 15vh;
+  width: 75vw;
+}
+
+/* Schematic */
+.schematic {
+  position: relative;
+  display: block;
+  clear: both;
+  width: 25vw;
+  min-height: 15vh;
+  margin: 10px;
+  /* position: absolute; */
+}
+.box {
+  display: block;
+  position: absolute;
+  outline: 2px solid black;
+  font-size: calc(9px + 1vmin);
 }
 
 /* Graphs */
