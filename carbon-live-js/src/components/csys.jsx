@@ -14,12 +14,17 @@ export function calc_Ks({ Tc, Sal }) {
     let KW = Math.exp(148.9652 - 13847.26 / T - 23.6521 * lnT + (118.67 / T - 5.977 + 1.0495 * lnT) * sqrtSal - 0.01615 * Sal)
     let KB = Math.exp((-8966.90 - 2890.53 * sqrtSal - 77.942 * Sal + 1.728 * Sal * sqrtSal - 0.0996 * Sal * Sal) / T + (148.0248 + 137.1942 * sqrtSal + 1.62142 * Sal) + (-24.4344 - 25.085 * sqrtSal - 0.2474 * Sal) * lnT + 0.053105 * sqrtSal * T);  // Dickson90b
 
+    let KspC = Math.pow(10, (-171.9065 - 0.077993 * T + 2839.319 / T + 71.595 * Math.log10(T) + (-0.77712 + 0.0028426 * T + 178.34 / T) * sqrtSal - 0.07711 * Sal + 0.0041249 * Sal * sqrtSal))
+    let KspA = Math.pow(10, (-171.945 - 0.077993 * T + 2903.293 / T + 71.595 * Math.log10(T) + (-0.068393 + 0.0017276 * T + 88.135 / T) * sqrtSal - 0.10018 * Sal + 0.0059415 * Sal * sqrtSal))
+
     return {
         K0: K0,
         K1: K1,
         K2: K2,
         KB: KB,
-        KW: KW
+        KW: KW,
+        KspA: KspA,
+        KspC: KspC
     }
 }
 
@@ -112,12 +117,16 @@ export function calc_csys({ DIC, TA, Sal, Temp }) {
     let CO3 = 1e6 * DIC / (1 + H / Ks.K2 + H ** 2 / (Ks.K1 * Ks.K2));
     let fCO2 = CO2 / Ks.K0;
 
+    // Saturation measure
+    let c = 1e-6 * CO3 / (Ks.KspC / 10.2e-3)
+
     return {
         pH: pH,
         fCO2: fCO2,
-        CO2: CO2 * 1e6,
+        CO2: CO2,
         HCO3: HCO3,
         CO3: CO3,
+        c: c
     }
 }
 
