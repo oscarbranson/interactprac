@@ -28,33 +28,86 @@ body, html {
   color: lightgrey;
 }
 
-#main_panel {
-  height: 95%;
-  width: 95%
+#main-panel {
+  height: 96vh;
+  width: 96vw;
+  margin-left: 2vw;
 }
 
 /* Top Bar */
 .top-bar {
+  position: fixed;
+  z-index: 10;
+  background-color: #282c34;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 22vh;
+  height: 22vh;
   display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-left: 2vw;
+  padding-top: 1vh;
 }
 
 /* Controls */
 .control-container {
   display: flex;
-  align-items: center;
-  min-height: 15vh;
-  width: 75vw;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  height: 19vh;
+  width: 74vw;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-right: 1vw;
 }
+
+#model-controls {
+  width: 100%;
+  display: flex;
+  /* justify-content: space-between; */
+}
+
+.control-set {
+  background-color: #3c424e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  margin: 3px;
+  min-width: 8vw;
+}
+.control-set h3 {
+  font-size: calc(12px + 2vmin);
+  text-align: center;
+}
+.control-value {
+  display: inline-block;
+  text-align: center;
+}
+
+#plot-controls {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#plot-controls Button {
+  min-width: 4em;
+  width: 11vw;
+}
+
 
 /* Schematic */
 .schematic {
   position: relative;
   display: block;
   clear: both;
-  width: 25vw;
-  min-height: 15vh;
-  margin: 10px;
-  /* position: absolute; */
+  width: 22vw;
+  min-height: 19vh;
+  margin-top: 10px;
 }
 .box {
   display: block;
@@ -62,25 +115,49 @@ body, html {
   outline: 2px solid black;
   font-size: calc(9px + 1vmin);
 }
+.schematic .dropdown {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: calc(9px + 1vmin);
+}
 
 /* Graphs */
 
+#plot-param-controls {
+  width: 100%;
+}
+
+#graph-panel {
+  position: absolute;
+  top: 23vh;
+  width: 96vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: #525761;
+  padding: 1vh 1vw 0 1vw;
+}
+
 .graph-container {
-  min-height: 75vh;
-  min-width: 90vw;
+  background-color: #3c424e;
   display: flex;
   flex-direction: column;
-  /* padding-left: 4em; */
   align-items: stretch;
   justify-content: center;
-  /* min-width: 100vh; */
+  margin-bottom: 1vh;
+  /* margin-left: 1vw; */
+  /* margin-right: 1vw; */
+}
 
+.graph-container h3 {
+  font-size: calc(12px + 2vmin);
+  margin-left: 12px;
 }
 
 .graph {
-  /* align-items: stretch; */
   height: 12vh;
-  /* border-style: groove; */
 }
 
 svg path {

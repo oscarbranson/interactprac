@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ParamDropdown } from './Dropdown'
+import { ParamDropdown } from './ParamDropdown'
 
 const divid = "threebox"
 
@@ -86,7 +86,7 @@ export class Schematic extends Component {
           backgroundColor: col_hilat
           }}>{val_hilat.toPrecision(this.props.var_info[this.props.param + '_hilat']['precision'])}</div>
         <ParamDropdown className='dropdown'
-                        params={['pH', 'DIC', 'TA', 'fCO2', 'temp', 'sal', 'PO4', 'CO3', 'HCO3', 'c']}
+                        params={this.props.ocean_vars}
                         param={this.props.param} 
                         handleSelect={this.props.handleDropdownSelect}/>
       </div>

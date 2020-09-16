@@ -1,10 +1,16 @@
 import React from 'react';
 import { Graph } from './Graph'
+// import { ParamButtons } from './ParamButtons'
 
 export class GraphPane extends React.Component {
     // constructor(props) {
     //     super(props)
     //     console.log(this.props)
+    // }
+
+    // onParamChange(p) {
+    //     console.log(p)
+
     // }
 
     render () {
@@ -27,7 +33,9 @@ export class GraphPane extends React.Component {
         }
 
         return (
-            <div className='graph-container'>
+            <div className='graph-container' style={{width: this.props.width}}>
+                <h3>{this.props.title}</h3> 
+                {/* <ParamButtons params={this.props.variables} onChange={this.onParamChange}/> */}
                 {graphs}
             </div>
         )

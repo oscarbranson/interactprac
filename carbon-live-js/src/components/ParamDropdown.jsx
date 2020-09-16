@@ -17,8 +17,8 @@ export class ParamDropdown extends React.Component {
         }
 
         return (
-            <Dropdown onSelect={this.props.handleSelect} size="sm">
-            <Dropdown.Toggle variant="secondary" id="dropdown-secondary">
+            <Dropdown onSelect={this.props.handleSelect}>
+            <Dropdown.Toggle variant="secondary" size="sm" id="dropdown-secondary">
                 {this.props.param}
             </Dropdown.Toggle>
             <Dropdown.Menu>

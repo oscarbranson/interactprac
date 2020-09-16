@@ -69,7 +69,7 @@ export function give_H_CO2({H, CO2, Ks}) {
 
 // For adding CO2 with conserved TA.
 export function give_fCO2_TA({ fCO2, TA, Sal, Ks}) {
-    // Returns [H], units: mol/kg
+    // Returns DIC, units: mol/kg
     let BT = BT35 * Sal;
 
     let CO2 = fCO2 * Ks.K0;
@@ -100,14 +100,26 @@ export function give_fCO2_TA({ fCO2, TA, Sal, Ks}) {
         H -= diff_H;
     }
 
-    return H
+    return CO2 * (1 + Ks.K1 / H + Ks.K1 * Ks.K2 / H ** 2)  // DIC
+    // return H
 }
 
-export function calc_csys({ DIC, TA, Sal, Temp }) {
+export function DIC_from_fCO2({ fCO2, TA, Sal, Ks }) {
+    TA *= 1e-6;
+    fCO2 *= 1e-6;
+
+    // let Ks = calc_Ks({ Tc: Temp, Sal: Sal })
+
+    let DIC = give_fCO2_TA({fCO2: fCO2, TA:TA, Sal: Sal, Ks:Ks})
+
+    return DIC
+}
+
+export function calc_csys({ DIC, TA, Sal, Ks }) {
     TA = TA * 1e-6;
     DIC = DIC * 1e-6;
 
-    let Ks = calc_Ks({ Tc: Temp, Sal: Sal })
+    // let Ks = calc_Ks({ Tc: Temp, Sal: Sal })
 
     let H = give_DIC_TA({DIC: DIC, TA:TA, Sal: Sal, Ks:Ks})
 

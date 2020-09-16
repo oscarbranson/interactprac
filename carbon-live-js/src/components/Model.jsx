@@ -1,25 +1,14 @@
 import React from 'react';
-// import { start_state, step, var_info} from './TwoBox';
 import { start_state, step, var_info} from './ThreeBox_full';
-import { Button } from './ControlElements';
-// import { Graph } from './Graph';
+import Button from 'react-bootstrap/Button'
+import { ModelControls } from './ModelControls'
 import { GraphPane } from './GraphPane';
 import { Schematic } from './Schematic';
-import { SchematicDropdown } from './Dropdown';
+import { ParamButtons } from './ParamButtons';
+import {calc_Ks} from './csys'
 
 const frameTime = 50;
 const npoints = 100;
-
-// const plot_variables = ['PO4_surf', 'DIC_surf', 'DIC_deep', 'TA_surf', 'TA_deep']
-const  plot_variables = [
-    // 'PO4_hilat', 'PO4_lolat', 'PO4_deep',
-    // 'DIC_hilat', 'DIC_lolat', 'DIC_deep',
-    // 'TA_hilat', 'TA_lolat', 'TA_deep',
-    'pCO2_atmos',
-    'TA_hilat', 'DIC_hilat', 'pH_hilat', 'c_hilat', 'fCO2_hilat',
-    'TA_lolat', 'DIC_lolat', 'pH_lolat', 'c_lolat', 'fCO2_lolat',
-    'TA_deep', 'DIC_deep', 'pH_deep', 'c_deep', 'fCO2_deep',
-]
 
 export class Model extends React.Component {
     constructor(props) {
@@ -29,15 +18,37 @@ export class Model extends React.Component {
         this.state = {
             start_state: start_state,
             now: start_state,
-            history: {}
+            history: {},
+            Ks: {}
         };
+        // Calculate Ks
+        this.state.Ks['deep'] = calc_Ks({Tc:this.state.now.temp_deep, Sal: this.state.now.sal_deep})
+        this.state.Ks['hilat'] = calc_Ks({Tc:this.state.now.temp_hilat, Sal: this.state.now.sal_hilat})
+        this.state.Ks['lolat'] = calc_Ks({Tc:this.state.now.temp_lolat, Sal: this.state.now.sal_lolat})
+
         // Set arrays to record model state
         for (let key in this.state.now) {
             this.state.history[key] = new Array(npoints).fill(this.state.now[key]);
           };
-
+        //   Default parameter to show in schematic
         this.state['schematicParam'] = 'DIC'
         
+        // Model Params
+        this.state['model_global_params'] = ['vmix', 'vthermo'] 
+        this.state['model_box_params'] = ['temp', 'sal']
+        this.state['model_surf_params'] = ['tau', 'percent_CaCO3']
+
+        //   Default plot setup
+        this.state['ocean_vars'] = ['PO4', 'DIC', 'TA', 'fCO2', 'pH', 'c', 'CO3', 'HCO3'];
+        this.state['plot_atmos'] = ['pCO2_atmos',];
+        this.state['plot_ocean'] = ['PO4']
+        for (let box of ['_deep', '_hilat', '_lolat']) {
+            this.state['plot' + box] = ['PO4' + box]
+        }
+
+        // Whether or not to run the model.
+        this.state['start_stop_button'] = "Stop";
+
         this.interval = null;
 
         this.stepModel = this.stepModel.bind(this);
@@ -45,8 +56,14 @@ export class Model extends React.Component {
         this.stopSimulation = this.stopSimulation.bind(this)
         this.resetModel = this.resetModel.bind(this)
         this.toggleSimulation = this.toggleSimulation.bind(this)
-        this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
+        this.genPlotVars = this.genPlotVars.bind(this)
+        this.genKs = this.genKs.bind(this)
 
+
+        this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
+        this.handleParamButtonChange = this.handleParamButtonChange.bind(this)
+        this.handleParamUpdate = this.handleParamUpdate.bind(this)
+        
         // let sw = calc_csys({DIC: 1980, TA: 2300, Sal: 34.78, Temp: 25})
         // console.log(sw)
         // let Ks = calc_Ks({Sal: 34.78, Tc: 25})
@@ -71,8 +88,10 @@ export class Model extends React.Component {
     toggleSimulation() {
         if (this.interval === null) {
             this.startSimulation()
+            this.setState({start_stop_button: "Stop"})
         }  else {
             this.stopSimulation()
+            this.setState({start_stop_button: "Start"})
         }
     }
 
@@ -84,7 +103,7 @@ export class Model extends React.Component {
 
     stepModel() {
         // Update Model State
-        let newState = step(this.state.now);
+        let newState = step(this.state.now, this.state.Ks);
         // Log in history
         this.updateHistory(newState);
         // update state
@@ -96,6 +115,34 @@ export class Model extends React.Component {
             this.state.history[key].shift();
             this.state.history[key].push(newState[key])
         }
+    }
+
+    handleParamButtonChange(params) {
+        this.setState({plot_ocean: params})
+        this.genPlotVars(params)
+        // console.log(params)
+    }
+
+    genPlotVars(params) {
+        let plotvars ={
+            'plot_ocean': params,
+            'plot_atmos': ['pCO2_atmos']
+        }
+        for (let box of ['_deep', '_hilat', '_lolat']) {
+            plotvars['plot' + box] = []
+            for (let p of params) {
+                plotvars['plot' + box].push(p + box)
+            }
+        }
+        this.setState(plotvars)
+    }
+
+    genKs() {
+        let Ks = {};
+        Ks['deep'] = calc_Ks({Tc:this.state.now.temp_deep, Sal: this.state.now.sal_deep})
+        Ks['hilat'] = calc_Ks({Tc:this.state.now.temp_hilat, Sal: this.state.now.sal_hilat})
+        Ks['lolat'] = calc_Ks({Tc:this.state.now.temp_lolat, Sal: this.state.now.sal_lolat})
+        this.setState({Ks:Ks})
     }
 
     componentDidMount() {
@@ -110,26 +157,66 @@ export class Model extends React.Component {
         this.setState({schematicParam: param})
     }
 
+    handleParamUpdate(key, value){
+        // console.log(key, value)
+        let newState = this.state.now;
+        newState[key] = value;
+        this.updateHistory(newState);
+        this.setState({now: newState, history: this.state.history});
+    }
+
     render() {
     return (
-        <div id='main_panel'>
+        <div id='main-panel'>
             <div className="top-bar">
                 <div className="control-container">
-                    <Button onClick={this.toggleSimulation} label="Start/Stop"/>
-                    <Button onClick={this.resetModel} label="reset"/>
-                    <SchematicDropdown 
-                        params={['pH', 'DIC', 'TA', 'fCO2', 'temp', 'sal', 'PO4', 'CO3', 'HCO3']}
-                        param={this.state.schematicParam} 
-                        handleSelect={this.handleDropdownSelect}/>
+                    <ModelControls params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <div id="plot-controls">
+                        <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
+                        <div id='start-stop'>
+                            <Button onClick={this.resetModel} variant="outline-secondary" size="sm">Reset</Button>
+                            <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm">{this.state.start_stop_button}</Button>
+                        </div>
+                    </div>
                 </div>
-                <Schematic param={this.state.schematicParam} data={this.state.history} npoints={npoints} var_info={var_info}/>
+                <Schematic param={this.state.schematicParam} data={this.state.history}  ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
             </div>
+            <div id="graph-panel">
             < GraphPane 
+                width= "100%"
+                title= "Atmosphere"
                 data = {this.state.history}
-                variables = {plot_variables}
+                variables = {this.state.plot_atmos}
                 var_info = {var_info}
                 npoints = {npoints}
             />
+            < GraphPane 
+                width= "46.5vw"
+                title= "High Lat. Surface"
+                data = {this.state.history}
+                variables = {this.state.plot_hilat}
+                var_info = {var_info}
+                npoints = {npoints}
+            />
+
+            < GraphPane 
+                width= "46.5vw"
+                title= "Low Lat. Surface"
+                data = {this.state.history}
+                variables = {this.state.plot_lolat}
+                var_info = {var_info}
+                npoints = {npoints}
+            />
+
+            < GraphPane 
+                width= "100%"
+                title= "Deep"
+                data = {this.state.history}
+                variables = {this.state.plot_deep}
+                var_info = {var_info}
+                npoints = {npoints}
+            />
+            </div>
         </div>
         )
     };
