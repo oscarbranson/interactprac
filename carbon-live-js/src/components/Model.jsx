@@ -19,12 +19,9 @@ export class Model extends React.Component {
             start_state: start_state,
             now: start_state,
             history: {},
-            Ks: {}
         };
         // Calculate Ks
-        this.state.Ks['deep'] = calc_Ks({Tc:this.state.now.temp_deep, Sal: this.state.now.sal_deep})
-        this.state.Ks['hilat'] = calc_Ks({Tc:this.state.now.temp_hilat, Sal: this.state.now.sal_hilat})
-        this.state.Ks['lolat'] = calc_Ks({Tc:this.state.now.temp_lolat, Sal: this.state.now.sal_lolat})
+        this.state['Ks'] = this.genKs()
 
         // Set arrays to record model state
         for (let key in this.state.now) {
@@ -35,8 +32,8 @@ export class Model extends React.Component {
         
         // Model Params
         this.state['model_global_params'] = ['vmix', 'vthermo'] 
-        this.state['model_box_params'] = ['temp', 'sal']
-        this.state['model_surf_params'] = ['tau', 'percent_CaCO3']
+        this.state['model_hilat_params'] = ['tau_hilat', 'percent_CaCO3_hilat', 'temp_hilat']
+        this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
         this.state['ocean_vars'] = ['PO4', 'DIC', 'TA', 'fCO2', 'pH', 'c', 'CO3', 'HCO3'];
@@ -142,7 +139,7 @@ export class Model extends React.Component {
         Ks['deep'] = calc_Ks({Tc:this.state.now.temp_deep, Sal: this.state.now.sal_deep})
         Ks['hilat'] = calc_Ks({Tc:this.state.now.temp_hilat, Sal: this.state.now.sal_hilat})
         Ks['lolat'] = calc_Ks({Tc:this.state.now.temp_lolat, Sal: this.state.now.sal_lolat})
-        this.setState({Ks:Ks})
+        return Ks
     }
 
     componentDidMount() {
@@ -161,8 +158,10 @@ export class Model extends React.Component {
         // console.log(key, value)
         let newState = this.state.now;
         newState[key] = value;
-        this.updateHistory(newState);
-        this.setState({now: newState, history: this.state.history});
+        let Ks = this.genKs(newState);
+        this.setState({now: newState, Ks: Ks});
+        // this.updateHistory(newState);
+        // this.setState({now: newState, history: this.state.history, Ks: Ks});
     }
 
     render() {
@@ -170,7 +169,9 @@ export class Model extends React.Component {
         <div id='main-panel'>
             <div className="top-bar">
                 <div className="control-container">
-                    <ModelControls params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <ModelControls title="Global" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <div id="plot-controls">
                         <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
                         <div id='start-stop'>
@@ -179,7 +180,9 @@ export class Model extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Schematic param={this.state.schematicParam} data={this.state.history}  ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
+                <div id='schematic-container'>
+                    <Schematic param={this.state.schematicParam} data={this.state.history}  ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
+                </div>
             </div>
             <div id="graph-panel">
             < GraphPane 
