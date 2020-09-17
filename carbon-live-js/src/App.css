@@ -42,8 +42,8 @@ body, html {
   top: 0;
   left: 0;
   width: 100vw;
-  min-height: 22vh;
-  height: 22vh;
+  min-height: 23vh;
+  height: 23vh;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -55,39 +55,53 @@ body, html {
 .control-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  height: 19vh;
+  align-items: center;
+  /* justify-content: space-between; */
+  height: 100;
   width: 74vw;
-  margin-top: 10px;
-  margin-bottom: 10px;
   padding-right: 1vw;
 }
 
-#model-controls {
-  width: 100%;
+.control-section {
+  background-color: #3c424e;
+  border-radius: 8px;
+  margin-right: 1vw;
+}
+
+.control-section h2 {
+  font-size: calc(10px + 1vmin);
+  text-align: left;
+  margin: 5px 0 0 5px;
+}
+
+.model-controls {
   display: flex;
-  /* justify-content: space-between; */
+  padding: 5px;
 }
 
 .control-set {
-  background-color: #3c424e;
+  background-color: #282c34;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
   margin: 3px;
-  min-width: 8vw;
+  min-width: 6vw;
+  border-radius: 5px;
 }
 .control-set h3 {
-  font-size: calc(12px + 2vmin);
-  text-align: center;
-}
-.control-value {
-  display: inline-block;
+  font-size: calc(10px + 1vmin);
   text-align: center;
 }
 
+.control-value {
+  display: inline-block;
+  text-align: center;
+  font-size: calc(8px + 1vmin);
+}
+
 #plot-controls {
+  margin-top: 1vh;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
@@ -96,18 +110,42 @@ body, html {
 
 #plot-controls Button {
   min-width: 4em;
-  width: 11vw;
+  width: 10vw;
 }
 
+#plot-controls .btn-primary {
+  background-color: #5a6375;
+  border-color: #8791a5;
+}
+
+.btn.focus {
+  box-shadow: unset;
+}
+
+#plot-controls .active {
+  background-color: #282c34;
+}
+
+.rangeslider-vertical {
+  height: 6vh;
+  margin: 10px auto;
+}
+.rangeslider-vertical .rangeslider__fill {
+  background-color: #5a6375;
+}
 
 /* Schematic */
+#schematic-container {
+  height: 20vh;
+}
+
 .schematic {
   position: relative;
   display: block;
   clear: both;
   width: 22vw;
-  min-height: 19vh;
-  margin-top: 10px;
+  height: 100%;
+  /* margin-top: 10px; */
 }
 .box {
   display: block;
@@ -158,6 +196,12 @@ body, html {
 
 .graph {
   height: 12vh;
+}
+
+.graph-label {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
 }
 
 svg path {
