@@ -99,6 +99,7 @@ export class ModelControls extends React.Component {
         for (let p of this.props.params) {
             controls.push(
                 <ControlSet 
+                    key={p}
                     param={p}
                     value={this.props.now[p]}
                     handleUpdate={this.props.handleUpdate}
