@@ -28,7 +28,7 @@ export class Model extends React.Component {
             this.state.history[key] = new Array(npoints).fill(this.state.now[key]);
           };
         //   Default parameter to show in schematic
-        this.state['schematicParam'] = 'DIC'
+        this.state['schematicParam'] = 'PO4'
         
         // Model Params
         this.state['model_global_params'] = ['vmix', 'vthermo'] 
@@ -36,7 +36,7 @@ export class Model extends React.Component {
         this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
-        this.state['ocean_vars'] = ['PO4', 'DIC', 'TA', 'fCO2', 'pH', 'c', 'CO3', 'HCO3'];
+        this.state['ocean_vars'] = ['PO4', 'TA', 'DIC', 'pH', 'fCO2', 'CO3', 'HCO3', 'c'];
         this.state['plot_atmos'] = ['pCO2_atmos',];
         this.state['plot_ocean'] = ['PO4']
         for (let box of ['_deep', '_hilat', '_lolat']) {
