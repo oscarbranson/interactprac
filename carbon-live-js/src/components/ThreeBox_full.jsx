@@ -103,6 +103,27 @@ function dTA_lolat({TA_deep, TA_lolat, PO4_lolat, vthermo, tau_lolat, vol_lolat,
 // const total_DIC = 2256;
 // const total_TA = 2364;
 
+export const paramLabels = {
+    PO4: '[PO<sub>4</sub>]',
+    c: '\u03A9',
+    DIC: 'DIC',
+    TA: 'TA',
+    fCO2: 'fCO<sub>2</sub>',
+    pH: 'pH',
+    CO3: '[CO<sub>3</sub><sup>2-</sup>]',
+    HCO3: '[HCO<sub>3</sub><sup>-</sup>]',
+}
+
+// Box setup
+const SA_ocean = 358e12;  // m2
+const vol_ocean = 1.34e18  // m3
+const fSA_hilat = 0.15;
+const depth_hilat = 200;  // m
+const vol_hilat = SA_ocean * fSA_hilat * depth_hilat;  // m3
+const fSA_lolat = 1 - fSA_hilat;
+const depth_lolat = 100;  // m
+const vol_lolat = SA_ocean * fSA_lolat * depth_lolat;  // m3
+
 export const start_state = {
     // 'vmix': 1.2e15,
     'vmix': 1.89e15,  // m3 yr-1
@@ -111,29 +132,29 @@ export const start_state = {
     'tau_hilat': 50,  // yr
     'tau_lolat': 1,  // yr
     'percent_CaCO3_hilat': 10,
-    'percent_CaCO3_lolat': 30,
-    'vol_deep': 1.25e18,  // m3
-    'vol_lolat': 1.31e16,  // m3
-    'vol_hilat': 2.97e16,  // m3
+    'percent_CaCO3_lolat': 20,
+    'vol_deep': vol_ocean - vol_lolat - vol_hilat,  // m3
+    'vol_lolat': vol_lolat,  // m3
+    'vol_hilat': vol_hilat,  // m3
     'mass_atmos': 5.132e18,  // kg
     'moles_atmos': 1.773e20,  // moles
-    'SA_ocean': 358e12,  // m2
-    'fSA_hilat': 0.15,
-    'fSA_lolat': 0.85,
+    'SA_ocean': SA_ocean,  // m2
+    'fSA_hilat': fSA_hilat,
+    'fSA_lolat': fSA_lolat,
     // Temp and sal from Table A.3 of Sarmiento & Gruber
     'temp_deep': 1.92,
-    'temp_hilat': 3,
+    'temp_hilat': (4.21 + 3.22) / 2,
     'temp_lolat': 22.85,
     'sal_lolat': 35.15,
     'sal_hilat': 33.5,
     'sal_deep': 34.72,
     'PO4_lolat': 0.31,
     'PO4_hilat': (0.89 + 1.54) / 2,
-    'PO4_deep': 2.28,
+    'PO4_deep': 2.38,
     'DIC_lolat': 1958,  // total_DIC,
     'DIC_hilat': (2006 + 2082) / 2,  // total_DIC,
     'DIC_deep': 2279,  // total_DIC,
-    'TA_lolat': 2315,  // total_TA,
+    'TA_lolat': 2243,  // 2315,  // total_TA,
     'TA_hilat': (2257 + 2291) / 2,  // total_TA,
     'TA_deep': 2381,  // total_TA,
     'pH_deep': 7.97,
@@ -154,7 +175,7 @@ export const start_state = {
     'CO2_lolat': 9,
     'HCO3_lolat': 1900,
     'CO3_lolat': 300,
-    'pCO2_atmos': 303,
+    'pCO2_atmos': 405,
   };
 
 function update_csys(state, Ks) {
@@ -478,31 +499,31 @@ export const var_info = {
         precision: 3
     },
     'pH_hilat': {
-        label: 'High Lat. pH',
+        label: 'pH',
         ymin: 7.5,
         ymax: 8.5,
         precision: 3
     },
     'fCO2_hilat': {
-        label:  'High Lat. fCO2',
+        label:  'fCO2',
         ymin: 200,
         ymax: 500,
         precision: 3
     },
     'CO2_hilat': {
-        label:  'High Lat. [CO2]',
+        label:  '[CO2]',
         ymin: 5,
         ymax: 15,
         precision: 3
     },
     'HCO3_hilat': {
-        label:  'High Lat. [HCO3]',
+        label:  '[HCO3]',
         ymin: 1500,
         ymax: 2000,
         precision: 4
     },
     'CO3_hilat': {
-        label:  'High Lat. [CO3]',
+        label:  '[CO3]',
         ymin: 70,
         ymax: 120,
         precision: 3
@@ -538,19 +559,19 @@ export const var_info = {
         precision: 3
     },
     'c_deep': {
-        label: 'Calcite Saturation',
+        label: '\u03A9',
         ymin: 0,
         ymax: 1,
         precision: 2
     },
     'c_lolat': {
-        label: 'Calcite Saturation',
+        label: '\u03A9',
         ymin: 0,
         ymax: 1,
         precision: 2
     },
     'c_hilat': {
-        label: 'High Lat Calcite Saturation',
+        label: '\u03A9',
         ymin: 0,
         ymax: 1,
         precision: 2

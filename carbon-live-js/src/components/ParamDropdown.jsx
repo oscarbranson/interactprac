@@ -1,6 +1,7 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {paramLabels} from './ThreeBox_full'
 
 export class ParamDropdown extends React.Component {
 
@@ -10,7 +11,7 @@ export class ParamDropdown extends React.Component {
         for (let param of this.props.params) {
             opts.push(
                 <Dropdown.Item key={i} eventKey={param}>
-                    {param}
+                    <div dangerouslySetInnerHTML={{__html: paramLabels[param]}}></div>
                 </Dropdown.Item>
             )
             i += 1;

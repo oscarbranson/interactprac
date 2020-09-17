@@ -2,13 +2,14 @@ import React from 'react';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {paramLabels} from './ThreeBox_full'
 
 export class ParamButtons extends React.Component {
     render() {
         let buttons = [];
         for (let p of this.props.params) {
             buttons.push(
-                <ToggleButton key={p} value={p}>{p}</ToggleButton>
+                <ToggleButton key={p} value={p}><div dangerouslySetInnerHTML={{__html: paramLabels[p]}}></div></ToggleButton>
             )
         }
         return (
