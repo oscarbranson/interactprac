@@ -1,4 +1,4 @@
-import { calc_csys, DIC_from_fCO2} from './csys';
+import { calc_csys } from './csys';
 
 function calc_percent_CaCO3(c, cb, percent_CaCO3) {
     if (c >= cb) {
@@ -49,16 +49,16 @@ function dDIC_hilat({DIC_deep, DIC_hilat, DIC_lolat, PO4_hilat, vmix, vthermo, t
             vmix * DIC_hilat +
             vthermo * DIC_lolat -
             vthermo * DIC_hilat -
-            f_DIC * (PO4_hilat * vol_hilat / tau_hilat)) / vol_hilat// +
-            // K0 * fSA_hilat * (pCO2_atmos - fCO2_hilat)
+            f_DIC * (PO4_hilat * vol_hilat / tau_hilat)) / vol_hilat
+            //  + K0 * fSA_hilat * (pCO2_atmos - fCO2_hilat)
     }
 
 function dDIC_lolat({DIC_deep, DIC_lolat, PO4_lolat, vthermo, tau_lolat, vol_lolat, percent_CaCO3 , K0, pCO2_atmos, fCO2_lolat, fSA_lolat}) {
     let f_DIC = 106 + 106 * percent_CaCO3 / 100;
     return (vthermo * DIC_deep -
             vthermo * DIC_lolat -
-            f_DIC * (PO4_lolat * vol_lolat / tau_lolat)) / vol_lolat// +
-            // K0 * fSA_lolat * (pCO2_atmos - fCO2_lolat)
+            f_DIC * (PO4_lolat * vol_lolat / tau_lolat)) / vol_lolat
+            //  + K0 * fSA_lolat * (pCO2_atmos - fCO2_lolat)
         }
 
 // function dpCO2({pCO2_atmos, fCO2_lolat, fCO2_hilat, SA_hilat, SA_lolat}) {
@@ -110,7 +110,7 @@ export const start_state = {
     'vthermo': 6.3072e14,  // m3 yr-1
     'tau_hilat': 50,  // yr
     'tau_lolat': 1,  // yr
-    'percent_CaCO3_hilat': 30,
+    'percent_CaCO3_hilat': 10,
     'percent_CaCO3_lolat': 30,
     'vol_deep': 1.25e18,  // m3
     'vol_lolat': 1.31e16,  // m3
@@ -322,15 +322,16 @@ export function step(state, Ks) {
         percent_CaCO3_hilat: calc_percent_CaCO3(newState['c_hilat'], 1, newState['percent_CaCO3_hilat']),
     })
 
-    update_csys(newState, Ks)
-
     // newState['pCO2_atmos'] = state.pCO2_atmos + dpCO2({
     //     pCO2_atmos: state.pCO2_atmos, 
-    //     fCO2_lolat: newState.fCO2_lolat,
-    //     fCO2_hilat: newState.fCO2_hilat,
+    //     fCO2_lolat: state.fCO2_lolat,
+    //     fCO2_hilat: state.fCO2_hilat,
     //     SA_hilat: state.fSA_hilat,
     //     SA_lolat: state.fSA_lolat
     //     })
+
+    update_csys(newState, Ks)
+
     newState['pCO2_atmos'] = calc_pCO2_atmos(newState);
 
     return newState
