@@ -23,6 +23,7 @@ export class Button extends React.Component {
 
 }
 
+// https://whoisandy.github.io/react-rangeslider/
 export class VerticalSlider extends React.Component {
     constructor(props) {
         super(props);
