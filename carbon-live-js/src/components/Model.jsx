@@ -1,7 +1,7 @@
 import React from 'react';
-import { start_state, step, var_info} from './ThreeBox_full';
+import { emitC, start_state, step, var_info} from './ThreeBox_full';
 import Button from 'react-bootstrap/Button'
-import { ModelControls } from './ModelControls'
+import { Disasters, ModelControls } from './ModelControls'
 import { GraphPane } from './GraphPane';
 import { Schematic } from './Schematic';
 import { ParamButtons } from './ParamButtons';
@@ -48,6 +48,8 @@ export class Model extends React.Component {
 
         this.interval = null;
 
+        this.emitting = false;
+
         this.stepModel = this.stepModel.bind(this);
         this.startSimulation = this.startSimulation.bind(this)
         this.stopSimulation = this.stopSimulation.bind(this)
@@ -60,6 +62,9 @@ export class Model extends React.Component {
         this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
         this.handleParamButtonChange = this.handleParamButtonChange.bind(this)
         this.handleParamUpdate = this.handleParamUpdate.bind(this)
+
+        this.handleVolcano = this.handleVolcano.bind(this)
+        this.toggleEmissions = this.toggleEmissions.bind(this)
         
         // let sw = calc_csys({DIC: 1980, TA: 2300, Sal: 34.78, Temp: 25})
         // console.log(sw)
@@ -100,7 +105,13 @@ export class Model extends React.Component {
 
     stepModel() {
         // Update Model State
-        let newState = step(this.state.now, this.state.Ks);
+        let newState = this.state.now
+        
+        if (this.emitting) {
+            newState = emitC(newState, 10)
+        }
+
+        newState = step(newState, this.state.Ks);
         // Log in history
         this.updateHistory(newState);
         // update state
@@ -119,6 +130,31 @@ export class Model extends React.Component {
         this.genPlotVars(params)
         // console.log(params)
     }
+
+    handleVolcano(GtC) {
+        // Size of eruption (Pinatubo = 0.05 Gt CO2, or 0.05 * 0.272 Gt C)
+        let newState = emitC(this.state.now, GtC)
+        this.setState({now: newState});
+    }
+
+    toggleEmissions() {
+        if (this.emitting) {
+            this.emitting = false;
+        } else {
+            this.emitting = true;
+        }
+    }
+
+    // handleHumans() {
+    //     console.log('burn')
+
+    //     let newState = this.state.now;
+    //     let emit = 1e6 * 2.6e15 // micromoles of C per year
+
+    //     let surf_vol = this.state.now.vol_hilat + this.state.now.vol_lolat;
+    //     newState.DIC_hilat += emit * this.state.now.vol_hilat / surf_vol / this.state.now.vol_hilat; 
+    //     newState.DIC_lolat += emit * this.state.now.vol_lolat / surf_vol / this.state.now.vol_lolat; 
+    // }
 
     genPlotVars(params) {
         let plotvars ={
@@ -172,6 +208,7 @@ export class Model extends React.Component {
                     <ModelControls title="Global" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions}/>
                     <div id="plot-controls">
                         <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
                         <div id='start-stop'>

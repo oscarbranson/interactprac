@@ -1,5 +1,5 @@
 import React from 'react';
-// import { Button } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 import { VerticalSlider } from './ControlElements';
 import { start_state } from './ThreeBox_full'
 
@@ -64,19 +64,6 @@ export class ControlSet extends React.Component {
         this.props.handleUpdate(this.props.param, value)
     }
 
-    // render () {
-    //     return (
-    //         <div className="control-set">
-    //             <h3 dangerouslySetInnerHTML={{__html: labels[this.props.param]}}></h3>
-    //             <Button onClick={this.handleDouble} size='sm'>Double</Button>
-    //             <div className="control-value">
-    //                 {formatnum(this.props.value, paramFormats[this.props.param])}
-    //             </div>
-    //             <Button onClick={this.handleHalve} size='sm'>Halve</Button>
-    //             <VerticalSlider value={10} min={0} max={20}/>
-    //         </div>
-    //     )
-    // } 
     render () {
         let min = paramFormats[this.props.param][2];
         let max = paramFormats[this.props.param][3];
@@ -90,6 +77,53 @@ export class ControlSet extends React.Component {
             </div>
         )
     } 
+}
+
+export class Disasters extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            GtC_pinutubo: 0.05 * 0.272,
+            emitLabel: 'Burn!'
+        }
+    
+        this.handleVolcano = this.handleVolcano.bind(this)
+        this.handleEmissions = this.handleEmissions.bind(this)
+    }
+
+    handleVolcano() {
+        this.props.handleVolcano(this.state.GtC_pinutubo)
+    }
+
+    handleEmissions() {
+        this.props.handleEmissions()
+        if (this.state.emitLabel === 'Burn!') {
+            this.state.emitLabel = 'Stop.';
+        } else {
+            this.state.emitLabel = 'Burn!';
+        }
+    }
+
+    render () {
+        return (
+        <div className="control-section" style={{zIndex: 5}}>
+            <h2>Disasters</h2>
+            <div className="model-controls">
+            <div className="control-set">
+                <h3>Volcano</h3>
+                {/* <VerticalSlider/> */}
+                {/* <Button size="sm">St. Helens</Button> */}
+                <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
+            </div>
+            <div className="control-set">
+                <h3>Humans</h3>
+                <Button onClick={this.handleEmissions} size="sm">{this.state.emitLabel}</Button>
+            </div>
+            </div>
+        </div>
+        )
+    }
 }
 
 
