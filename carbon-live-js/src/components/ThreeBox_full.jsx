@@ -31,50 +31,58 @@ function dPO4_lolat(state) {
         (state.PO4_lolat * state.vol_lolat / state.tau_lolat)) / state.vol_lolat
 }
 
-// Replace this with differential equations. Stoichiometric removal flux, mixing, atmospheric equilibration.
+// Form from Zeebe 2012 (LOSCAR)
 function dCO2_lolat(state, Ks) {
-    // timestep is longer than surface layer equilibration time - don't worry about diffusivity
-    return (state.pCO2_atmos * Ks.lolat.K0 - state.CO2_lolat)
+    // console.log(state.pCO2_atmos * Ks.lolat.K0 - state.CO2_lolat)
+    return state.kas * state.SA_lolat * (state.pCO2_atmos - state.fCO2_lolat)  // mol yr-1
 }
 
 function dCO2_hilat(state, Ks) {
-    return (state.pCO2_atmos * Ks.hilat.K0 - state.CO2_hilat)
+    // console.log(state.pCO2_atmos * Ks.hilat.K0 - state.CO2_hilat)
+    return state.kas * state.SA_hilat * (state.pCO2_atmos - state.fCO2_hilat)  // mol yr-1
 }
 
 function dpCO2(state, Ks) {
-    let dpCO2 = -1 * (state.vol_lolat * (dCO2_lolat(state, Ks) / Ks.lolat.K0) + state.vol_hilat * (dCO2_hilat(state, Ks) / Ks.hilat.K0)) / (state.vol_hilat + state.vol_lolat)
-    console.log(
-        (state.vol_lolat * (dCO2_lolat(state, Ks) / Ks.lolat.K0)) / 
-        (state.vol_hilat * (dCO2_hilat(state, Ks) / Ks.hilat.K0)))
-    return dpCO2
-
+    let q0 = 2.2e15 / 12;  // convert from uatm to moles
+    let del_moles_C = (
+        state.kas * state.SA_hilat * (state.fCO2_hilat - state.pCO2_atmos) + 
+        state.kas * state.SA_lolat * (state.fCO2_lolat - state.pCO2_atmos)
+        );
+    let del_uatm_CO2 = del_moles_C / q0;
+    // console.log(del_uatm_CO2)
+    return del_uatm_CO2
 }
 
 function dDIC_deep(state) {
     let f_DIC_lolat = 106 + 106 * state.percent_CaCO3_lolat / 100;
     let f_DIC_hilat = 106 + 106 * state.percent_CaCO3_hilat / 100;
-    return (state.vmix * state.DIC_hilat -
-        state.vmix * state.DIC_deep +
-        state.vthermo * state.DIC_hilat -
-        state.vthermo * state.DIC_deep +
+    return (
+        state.vmix * (state.DIC_hilat - state.DIC_deep) +
+        state.vthermo * (state.DIC_hilat - state.DIC_deep) +
         f_DIC_hilat * (state.PO4_hilat * state.vol_hilat / state.tau_hilat) +
-        f_DIC_lolat * (state.PO4_lolat * state.vol_lolat / state.tau_lolat)) / state.vol_deep
+        f_DIC_lolat * (state.PO4_lolat * state.vol_lolat / state.tau_lolat)
+        ) / state.vol_deep
 }
 
 function dDIC_hilat(state, Ks) {
     let f_DIC = 106 + 106 * state.percent_CaCO3_hilat / 100;
-    // console.log(dCO2_hilat(state, Ks))
-    return (state.vmix * (state.DIC_deep - state.DIC_hilat) +
-        state.vthermo * (state.DIC_lolat - state.DIC_hilat) -
-        f_DIC * (state.PO4_hilat * state.vol_hilat / state.tau_hilat)) / state.vol_hilat + dCO2_hilat(state, Ks)
+    // console.log(1e3 * dCO2_hilat(state, Ks) / state.vol_hilat)
+    return (
+        state.vmix * (state.DIC_deep - state.DIC_hilat)
+        + state.vthermo * (state.DIC_lolat - state.DIC_hilat)
+        - f_DIC * (state.PO4_hilat * state.vol_hilat / state.tau_hilat)
+        + 1e3 * dCO2_hilat(state, Ks)
+        ) / state.vol_hilat
 }
 
 function dDIC_lolat(state, Ks) {
     let f_DIC = 106 + 106 * state.percent_CaCO3_lolat / 100;
-    // console.log(dCO2_lolat(state, Ks))
-    return (state.vthermo * state.DIC_deep -
-        state.vthermo * state.DIC_lolat -
-        f_DIC * (state.PO4_lolat * state.vol_lolat / state.tau_lolat)) / state.vol_lolat + dCO2_lolat(state, Ks)
+    // console.log(1e3 * dCO2_lolat(state, Ks) / state.vol_lolat)
+    return (
+        state.vthermo * (state.DIC_deep - state.DIC_lolat)
+        - f_DIC * (state.PO4_lolat * state.vol_lolat / state.tau_lolat)
+        + 1e3 * dCO2_lolat(state, Ks)
+        ) / state.vol_lolat
 }
 
 function dTA_deep(state) {
@@ -133,7 +141,12 @@ const fSA_lolat = 1 - fSA_hilat;
 const depth_lolat = 100;  // m
 const vol_lolat = SA_ocean * fSA_lolat * depth_lolat;  // m3
 
+const Sv_2_m3yr = 1e6 * (60 * 60 * 24 * 365);
+const vthermo = 20;  // Sv
+const vmix = 10;  // Sv
+
 export const start_state = {
+    'kas': 0.02,  // air-sea gas exchange mol (uatm m2 yr-1)-1
     // 'vmix': 1.2e15,
     'vmix': 1.89e15,  // m3 yr-1
     // 'vthermo': 6.3072e14,
@@ -144,6 +157,7 @@ export const start_state = {
     'percent_CaCO3_lolat': 20,
     'depth_lolat': depth_lolat,
     'depth_hilat': depth_hilat,
+    'vol_ocean': vol_ocean,
     'vol_deep': vol_ocean - vol_lolat - vol_hilat,  // m3
     'vol_lolat': vol_lolat,  // m3
     'vol_hilat': vol_hilat,  // m3
@@ -191,6 +205,7 @@ export const start_state = {
     'pCO2_atmos': 389,
 };
 
+
 function update_csys(state, Ks) {
     let csys_deep = calc_csys({
         DIC: state['DIC_deep'],
@@ -228,32 +243,14 @@ function calc_pCO2_atmos(state) {
 
 export function emitC(state, GtC) {
     // let surf_vol = state.vol_hilat + state.vol_lolat;
+    let q0 = 2.2e15 / 12;  // convert from uatm to moles
     let emit_moles = GtC * 1e15 / 12; // convert Gt C to moles of C
-    let emit_ppm = 1e6 * emit_moles / state.moles_atmos;
-    let new_pCO2 = state.pCO2_atmos + emit_ppm;
+    // let emit_ppm = 1e6 * emit_moles / state.moles_atmos;
+    let new_pCO2 = state.pCO2_atmos + emit_moles / q0;
     // console.log(emit_ppm, new_pCO2)
     state.pCO2_atmos = new_pCO2;
     return state
 }
-
-// function diffuse_CO2_hilat(state) {
-//     let kw = (24 * 365) * 20 / 100;  // diffusivity of CO2 - 20 cm hr-1 converted to m yr-1
-//     return (state.pCO2_atmos - state.fCO2_hilat) * kw / state.depth_hilat
-// }
-
-// function diffuse_CO2_lolat(state) {
-//     let kw = (24 * 365) * 20 / 100;  // diffusivity of CO2 - 20 cm hr-1 converted to m yr-1
-//     return (state.pCO2_atmos - state.fCO2_lolat) * kw / state.depth_lolat
-// }
-
-// function update_pCO2(state) {
-
-// let last_pCO2_atmos = (state.fCO2_hilat * state.vol_hilat + state.fCO2_lolat * state.vol_lolat) / vol_surf;
-//     let delta_pCO2 = state.pCO2_atmos - last_pCO2_atmos;
-//     pCO2_hilat = 
-//     pCO2_lolat = 
-//     // let newDIC = DIC_from_fCO2(state.pCO2_atmos, )
-// }
 
 export function step(state, Ks) {
     let newState = Object.assign({}, state);
@@ -270,10 +267,33 @@ export function step(state, Ks) {
     newState.TA_lolat += dTA_lolat(state);
     newState.TA_deep += dTA_deep(state);
 
-    newState['pCO2_atmos'] += dpCO2(state, Ks);
+    newState.pCO2_atmos += dpCO2(state, Ks);
+    // dpCO2(state, Ks);
+
+    // newState.pCO2_atmos = calc_pCO2_atmos(state)
 
     newState = update_csys(newState, Ks);
+    // console.log()
+    // total C inventory
+    let C_deep = state.vol_deep * state.DIC_deep * 1e-6 * 12 * 1e-15;
+    let C_hilat = state.vol_hilat * state.DIC_hilat * 1e-6 * 12 * 1e-15;
+    let C_lolat = state.vol_lolat * state.DIC_lolat * 1e-6 * 12 * 1e-15;
+    let total_PgC = C_deep + C_hilat + C_lolat;
+    // console.log(C_deep, C_hilat, C_lolat)
 
+    // let newTotal_C = newState.vol_hilat * newState.DIC_hilat + newState.vol_lolat * newState.DIC_lolat + newState.vol_deep * newState.DIC_deep
+    // let newTotal_PgC = newTotal_C * 12 * 1e-15
+
+
+    // console.log(newTotal_PgC - total_PgC)
+
+    // console.log(
+    //     (newState.vol_hilat * newState.DIC_hilat) / (state.vol_hilat * state.DIC_hilat), 
+    //     (state.vol_lolat * state.DIC_lolat) / (newState.vol_lolat * newState.DIC_lolat),
+    //     (state.vol_deep * state.DIC_deep) / (newState.vol_deep * newState.DIC_deep)
+    // )
+
+    // CO2 flux
     return newState
 }
 
@@ -499,7 +519,7 @@ export const var_info = {
         label: 'pCO2',
         ymin: 350,
         ymax: 450,
-        precision: 3
+        precision: 6
     },
     'temp_lolat': {
         label: 'Temp',
