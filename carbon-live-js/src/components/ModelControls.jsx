@@ -99,7 +99,7 @@ export class Disasters extends React.Component {
     handleEmissions() {
         this.props.handleEmissions()
         if (this.state.emitLabel === 'Burn!') {
-            this.state.emitLabel = 'Stop.';
+            this.state.emitLabel = 'IPCC';
         } else {
             this.state.emitLabel = 'Burn!';
         }
@@ -119,6 +119,9 @@ export class Disasters extends React.Component {
             <div className="control-set">
                 <h3>Humans</h3>
                 <Button onClick={this.handleEmissions} size="sm">{this.state.emitLabel}</Button>
+                <div className="control-value">
+                {this.props.GtC_released} GtC
+                </div>
             </div>
             </div>
         </div>
