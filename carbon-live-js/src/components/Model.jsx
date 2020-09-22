@@ -27,6 +27,9 @@ export class Model extends React.Component {
         for (let key in this.state.now) {
             this.state.history[key] = new Array(npoints).fill(this.state.now[key]);
           };
+        
+        // console.log(this.state.now.vol_ocean / this.state.now.vthermo)
+
         //   Default parameter to show in schematic
         this.state['schematicParam'] = 'PO4'
         
@@ -49,6 +52,7 @@ export class Model extends React.Component {
         this.interval = null;
 
         this.emitting = false;
+        this.state.GtC_released = 0;
 
         this.stepModel = this.stepModel.bind(this);
         this.startSimulation = this.startSimulation.bind(this)
@@ -106,16 +110,19 @@ export class Model extends React.Component {
     stepModel() {
         // Update Model State
         let newState = this.state.now
-        
+        let GtC_release = 2;
+        let new_GtC = 0;
+
         if (this.emitting) {
-            newState = emitC(newState, 10)
+            newState = emitC(newState, GtC_release)
+            new_GtC = GtC_release;
         }
 
         newState = step(newState, this.state.Ks);
         // Log in history
         this.updateHistory(newState);
         // update state
-        this.setState({now: newState, history: this.state.history});
+        this.setState({now: newState, history: this.state.history, emissions: this.state.GtC_released += new_GtC});
     };
 
     updateHistory(newState) {
@@ -208,7 +215,7 @@ export class Model extends React.Component {
                     <ModelControls title="Global" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
-                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions}/>
+                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
                     <div id="plot-controls">
                         <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
                         <div id='start-stop'>
