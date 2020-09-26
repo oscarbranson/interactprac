@@ -2,6 +2,30 @@
 
 var BT35 = 415.7e-6 / 35.;
 
+export function moles2uatm(moles) {
+    return moles * 12 / 2.13e15
+}
+
+export function uatm2moles(uatm) {
+    return uatm * 2.13e15 / 12
+}
+
+export function GtC2moles(GtC) {
+    return GtC * 1e15 / 12
+}
+
+export function moles2GtC(moles) {
+    return moles * 1e-15 * 12
+}
+
+export function uatm2GtC(uatm) {
+    return uatm * 2.13
+}
+
+export function GtC2uatm(GtC) {
+    return GtC / 2.13
+}
+
 export function calc_Ks({ Tc, Sal }) {
     let sqrtSal = Math.sqrt(Sal);
     let T = Tc + 273.15;

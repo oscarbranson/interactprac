@@ -1,4 +1,4 @@
-import { calc_csys } from './csys';
+import { calc_csys, GtC2uatm } from './csys';
 
 function calc_percent_CaCO3(c, cb, percent_CaCO3) {
     if (c >= cb) {
@@ -239,17 +239,6 @@ function update_csys(state, Ks) {
 
 function calc_pCO2_atmos(state) {
     return (state.fCO2_hilat * state.vol_hilat + state.fCO2_lolat * state.vol_lolat) / (state.vol_hilat + state.vol_lolat)
-}
-
-export function emitC(state, GtC) {
-    // let surf_vol = state.vol_hilat + state.vol_lolat;
-    let q0 = 2.2e15 / 12;  // convert from uatm to moles
-    let emit_moles = GtC * 1e15 / 12; // convert Gt C to moles of C
-    // let emit_ppm = 1e6 * emit_moles / state.moles_atmos;
-    let new_pCO2 = state.pCO2_atmos + emit_moles / q0;
-    // console.log(emit_ppm, new_pCO2)
-    state.pCO2_atmos = new_pCO2;
-    return state
 }
 
 export function step(state, Ks) {

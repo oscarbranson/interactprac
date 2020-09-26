@@ -1,11 +1,11 @@
 import React from 'react';
-import { emitC, start_state, step, var_info} from './ThreeBox_full';
+import { start_state, step, var_info} from './ThreeBox_full';
 import Button from 'react-bootstrap/Button'
 import { Disasters, ModelControls } from './ModelControls'
 import { GraphPane } from './GraphPane';
 import { Schematic } from './Schematic';
 import { ParamButtons } from './ParamButtons';
-import {calc_Ks} from './csys'
+import {calc_Ks, GtC2uatm} from './csys'
 
 const frameTime = 50;
 const npoints = 100;
@@ -114,7 +114,7 @@ export class Model extends React.Component {
         let new_GtC = 0;
 
         if (this.emitting) {
-            newState = emitC(newState, GtC_release)
+            newState.pCO2_atmos += GtC2uatm(GtC_release)
             new_GtC = GtC_release;
         }
 
@@ -140,7 +140,8 @@ export class Model extends React.Component {
 
     handleVolcano(GtC) {
         // Size of eruption (Pinatubo = 0.05 Gt CO2, or 0.05 * 0.272 Gt C)
-        let newState = emitC(this.state.now, GtC)
+        let newState = this.state.now
+        newState.pCO2_atmos += GtC2uatm(GtC)
         this.setState({now: newState});
     }
 
