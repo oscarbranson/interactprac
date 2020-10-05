@@ -241,26 +241,18 @@ function calc_pCO2_atmos(state) {
     return (state.fCO2_hilat * state.vol_hilat + state.fCO2_lolat * state.vol_lolat) / (state.vol_hilat + state.vol_lolat)
 }
 
-
-// state.vmix * state.PO4_hilat -
-//         state.vmix * state.PO4_deep +
-//         state.vthermo * state.PO4_hilat -
-//         state.vthermo * state.PO4_deep +
-//         (state.PO4_hilat * state.vol_hilat / state.tau_hilat) +
-//         (state.PO4_lolat * state.vol_lolat / state.tau_lolat)) / state.vol_deep
-
 export function calc_fluxes(state) {
     let fluxes = {};
     // vmix
     fluxes.vmix_PO4_hilat = state.vmix * (state.PO4_hilat - state.PO4_deep);
-    // fluxes.vmix_PO4_lolat = state.vmix * (state.PO4_lolat - state.PO4_deep);
-    fluxes.vmix_PO4_lolat = 0;
+    fluxes.vmix_PO4_lolat = state.vmix * (state.PO4_lolat - state.PO4_deep);
+    // fluxes.vmix_PO4_lolat = 0;
     fluxes.vmix_DIC_hilat = state.vmix * (state.DIC_hilat - state.DIC_deep);
-    // fluxes.vmix_DIC_lolat = state.vmix * (state.DIC_lolat - state.DIC_deep);
-    fluxes.vmix_DIC_lolat = 0;
+    fluxes.vmix_DIC_lolat = state.vmix * (state.DIC_lolat - state.DIC_deep);
+    // fluxes.vmix_DIC_lolat = 0;
     fluxes.vmix_TA_hilat = state.vmix * (state.TA_hilat - state.TA_deep);
-    // fluxes.vmix_TA_lolat = state.vmix * (state.TA_lolat - state.TA_deep);
-    fluxes.vmix_TA_lolat = 0;
+    fluxes.vmix_TA_lolat = state.vmix * (state.TA_lolat - state.TA_deep);
+    // fluxes.vmix_TA_lolat = 0;
 
     // vthermo
     fluxes.vthermo_PO4_deep = state.vthermo * (state.PO4_hilat - state.PO4_deep);
@@ -285,17 +277,17 @@ export function calc_fluxes(state) {
     fluxes.prod_TA_hilat = fluxes.prod_PO4_hilat * f_TA_hilat
     fluxes.prod_TA_lolat = fluxes.prod_PO4_lolat * f_TA_lolat
 
-    // CO2 exchange
+    // CO2 exchange (moles yr-1)
     fluxes.exCO2_lolat = state.kas * state.SA_lolat * (state.pCO2_atmos - state.fCO2_lolat)
     fluxes.exCO2_hilat = state.kas * state.SA_hilat * (state.pCO2_atmos - state.fCO2_hilat)
 
     return fluxes
 }
 
-export function step(state, Ks) {
-    let fluxes = calc_fluxes(state);
-    let ifluxes = {};
+export function step(state, fluxes, Ks) {
+    // let fluxes = calc_fluxes(state);
     let newState = Object.assign({}, state);
+    // let newState = state;
 
     newState.PO4_deep += (fluxes.vmix_PO4_hilat + fluxes.vmix_PO4_lolat + fluxes.vthermo_PO4_deep + fluxes.prod_PO4_hilat + fluxes.prod_PO4_lolat) / state.vol_deep
     newState.PO4_hilat += (- fluxes.vmix_PO4_hilat + fluxes.vthermo_PO4_hilat - fluxes.prod_PO4_hilat) / state.vol_hilat

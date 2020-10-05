@@ -29,9 +29,9 @@ body, html {
 }
 
 #main-panel {
-  height: 96vh;
-  width: 96vw;
-  margin-left: 2vw;
+  height: 100vh;
+  width: 98vw;
+  margin-left: 1vw;
 }
 
 /* Top Bar */
@@ -42,13 +42,13 @@ body, html {
   top: 0;
   left: 0;
   width: 100vw;
-  min-height: 23vh;
+  min-height: 17vh;
   /* height: 23vh; */
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  padding-left: 2vw;
-  /* padding-top: 1vh; */
+  padding-left: 1vw;
+  padding-right: 1vw;
 }
 
 /* Controls */
@@ -56,10 +56,7 @@ body, html {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  min-height: 22vh;
-  width: 74vw;
-  /* padding-right: 1vw; */
+  width: 100vw;
 }
 
 .control-section {
@@ -67,6 +64,7 @@ body, html {
   border-radius: 8px;
   margin-right: 1vw;
   margin-top: 1vh;
+  margin-bottom: 1vh;
   height: 15vh;
 }
 
@@ -75,13 +73,6 @@ body, html {
   text-align: left;
   margin: 0.2vh 0px 0 0.3vw;
   min-height: 2vh;
-}
-
-.model-controls {
-  display: flex;
-  padding-left: 0.15vw;
-  padding-right: 0.15vw;
-  min-height: 12.6vh;
 }
 
 .control-set {
@@ -106,6 +97,91 @@ body, html {
   text-align: center;
   font-size: calc(6px + 1vmin);
   min-width: 1vh;
+}
+
+.rangeslider-vertical {
+  height: 6vh;
+  margin: 0.5vh auto;
+}
+.rangeslider-vertical .rangeslider__fill {
+  background-color: #5a6375;
+}
+
+
+
+/* Main display window */
+.main-display {
+  position: fixed;
+  padding-top: 18vh;
+  padding-bottom: 6vh;
+  width: 98vw;
+  height: 100vh;
+}
+
+.schematic {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.box {
+  display: block;
+  position: absolute;
+  outline: 4px solid black;
+  font-size: calc(9px + 1vmin);
+}
+.schematic .dropdown {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: calc(9px + 1vmin);
+}
+
+.flux-pane {
+  display: flex;
+  position: absolute;
+}
+
+.flux-box {
+  display: block;
+  flex-direction: row;
+  position: relative;
+  height: 100%;
+  /* background-color: red; */
+  margin-left: 1%;
+}
+
+.flux-arrow {
+  display: block;
+  position: absolute;
+  background-color: black;
+  /* border: solid 1pt #8791a5; */
+  border-left: solid 1pt #8791a5;
+  border-right: solid 1pt #8791a5;
+}
+
+#lohi.flux-pane {
+  transform: rotate(90deg);
+}
+
+
+/* Bottom bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 10;
+  background-color: #282c34;
+  padding-left: 1vw;
+  padding-right: 1vw;
+  min-height: 5vh;
+}
+
+.model-controls {
+  display: flex;
+  padding-left: 0.15vw;
+  padding-right: 0.15vw;
+  min-height: 12.6vh;
 }
 
 #plot-controls {
@@ -138,43 +214,8 @@ body, html {
   background-color: #282c34;
 }
 
-.rangeslider-vertical {
-  height: 6vh;
-  margin: 0.5vh auto;
-}
-.rangeslider-vertical .rangeslider__fill {
-  background-color: #5a6375;
-}
-
-/* Schematic */
-#schematic-container {
-  min-height: 21vh;
-  margin-top: 1vh;
-}
-
-.schematic {
-  position: relative;
-  display: block;
-  clear: both;
-  width: 22vw;
-  height: 21vh;
-  /* margin-top: 10px; */
-}
-.box {
-  display: block;
-  position: absolute;
-  outline: 2px solid black;
-  font-size: calc(9px + 1vmin);
-}
-.schematic .dropdown {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  font-size: calc(9px + 1vmin);
-}
 
 /* Graphs */
-
 #plot-param-controls {
   width: 100%;
 }

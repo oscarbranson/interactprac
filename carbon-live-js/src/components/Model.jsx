@@ -1,11 +1,11 @@
 import React from 'react';
-import { start_state, step, var_info} from './ThreeBox_full';
+import { start_state, step, calc_fluxes, var_info} from './ThreeBox_full';
 import Button from 'react-bootstrap/Button'
 import { Disasters, ModelControls } from './ModelControls'
 import { GraphPane } from './GraphPane';
 import { Schematic } from './Schematic';
 import { ParamButtons } from './ParamButtons';
-import {calc_Ks, GtC2uatm} from './csys'
+import {calc_Ks, GtC2uatm, moles2uatm} from './csys'
 
 const frameTime = 50;
 const npoints = 100;
@@ -19,19 +19,18 @@ export class Model extends React.Component {
             start_state: start_state,
             now: start_state,
             history: {},
+            fluxes: calc_fluxes(start_state)
         };
         // Calculate Ks
-        this.state['Ks'] = this.genKs()
+        this.state['Ks'] = this.genKs(start_state)
 
         // Set arrays to record model state
         for (let key in this.state.now) {
             this.state.history[key] = new Array(npoints).fill(this.state.now[key]);
           };
         
-        // console.log(this.state.now.vol_ocean / this.state.now.vthermo)
-
         //   Default parameter to show in schematic
-        this.state['schematicParam'] = 'PO4'
+        this.state['schematicParam'] = 'fCO2'
         
         // Model Params
         this.state['model_global_params'] = ['vmix', 'vthermo'] 
@@ -102,34 +101,42 @@ export class Model extends React.Component {
     }
 
     resetModel() {
-        let newState = this.state.start_state
-        this.updateHistory(newState);
-        this.setState({now: newState, history: this.state.history});
+        this.setState({
+            now: start_state, 
+            fluxes: calc_fluxes(start_state),
+            history: this.updateHistory(start_state),
+            Ks: this.genKs(start_state)});
     }
 
     stepModel() {
         // Update Model State
-        let newState = this.state.now
+        let newState = this.state.now;
         let GtC_release = 2;
         let new_GtC = 0;
-
+    
         if (this.emitting) {
             newState.pCO2_atmos += GtC2uatm(GtC_release)
             new_GtC = GtC_release;
         }
 
-        newState = step(newState, this.state.Ks);
-        // Log in history
-        this.updateHistory(newState);
+        let fluxes = calc_fluxes(newState)
+
+        newState = step(newState, fluxes, this.state.Ks);
         // update state
-        this.setState({now: newState, history: this.state.history, emissions: this.state.GtC_released += new_GtC});
+        this.setState({
+            now: newState, 
+            fluxes: fluxes, 
+            history: this.updateHistory(newState), 
+            emissions: this.state.GtC_released += new_GtC});
     };
 
     updateHistory(newState) {
+        let newHisotry = this.state.history;
         for (let key in this.state.now) {
-            this.state.history[key].shift();
-            this.state.history[key].push(newState[key])
+            newHisotry[key].shift();
+            newHisotry[key].push(newState[key])
         }
+        return newHisotry
     }
 
     handleParamButtonChange(params) {
@@ -178,11 +185,11 @@ export class Model extends React.Component {
         this.setState(plotvars)
     }
 
-    genKs() {
+    genKs(state) {
         let Ks = {};
-        Ks['deep'] = calc_Ks({Tc:this.state.now.temp_deep, Sal: this.state.now.sal_deep})
-        Ks['hilat'] = calc_Ks({Tc:this.state.now.temp_hilat, Sal: this.state.now.sal_hilat})
-        Ks['lolat'] = calc_Ks({Tc:this.state.now.temp_lolat, Sal: this.state.now.sal_lolat})
+        Ks['deep'] = calc_Ks({Tc:state.temp_deep, Sal: state.sal_deep})
+        Ks['hilat'] = calc_Ks({Tc:state.temp_hilat, Sal: state.sal_hilat})
+        Ks['lolat'] = calc_Ks({Tc:state.temp_lolat, Sal: state.sal_lolat})
         return Ks
     }
 
@@ -202,8 +209,7 @@ export class Model extends React.Component {
         // console.log(key, value)
         let newState = this.state.now;
         newState[key] = value;
-        let Ks = this.genKs(newState);
-        this.setState({now: newState, Ks: Ks});
+        this.setState({now: newState, Ks: this.genKs(newState)});
         // this.updateHistory(newState);
         // this.setState({now: newState, history: this.state.history, Ks: Ks});
     }
@@ -217,19 +223,23 @@ export class Model extends React.Component {
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
-                    <div id="plot-controls">
-                        <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
-                        <div id='start-stop'>
-                            <Button onClick={this.resetModel} variant="outline-secondary" size="sm">Reset</Button>
-                            <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm">{this.state.start_stop_button}</Button>
-                        </div>
-                    </div>
-                </div>
-                <div id='schematic-container'>
-                    <Schematic param={this.state.schematicParam} data={this.state.history}  ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
                 </div>
             </div>
-            <div id="graph-panel">
+            <div className='main-display'>
+            {/* <div id='schematic-container'> */}
+                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
+            {/* </div> */}
+            </div>
+            <div className="bottom-bar">
+                <div id="plot-controls">
+                    <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
+                    <div id='start-stop'>
+                        <Button onClick={this.resetModel} variant="outline-secondary" size="sm">Reset</Button>
+                        <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm">{this.state.start_stop_button}</Button>
+                    </div>
+                </div>
+            </div>
+            {/* <div id="graph-panel">
             < GraphPane 
                 width= "100%"
                 title= "Atmosphere"
@@ -264,7 +274,7 @@ export class Model extends React.Component {
                 var_info = {var_info}
                 npoints = {npoints}
             />
-            </div>
+            </div> */}
         </div>
         )
     };

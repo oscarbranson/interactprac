@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { ParamDropdown } from './ParamDropdown'
+import { moles2GtC } from './csys'
 
 const divid = "threebox"
 
@@ -67,8 +68,11 @@ export class Schematic extends Component {
     let col_hilat = this.parseHSL(h, s, l_hilat);
     let text_hilat = this.parseHSL(h, s, this.neg_color(l_hilat));
 
+    // console.log([this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_deep[ind]])
+
     return (
       <div className="schematic" id={divid}>
+        {/* Boxes */}
         <div className="box" id="atmos" style={{
           top: 0, left: 0, width: "100%", height: "20%", textAlign: "right", color: text_atmos,
           backgroundColor: "white"
@@ -85,6 +89,50 @@ export class Schematic extends Component {
           top: "20%", left: 0, width: "40%", height: "40%", textAlign: "left", color: text_hilat,
           backgroundColor: col_hilat
           }}>{val_hilat.toPrecision(this.props.var_info[this.props.param + '_hilat']['precision'])}</div>
+        {/* Flux Arrows */}
+        {/* CO2 Exchange */}
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]}/>
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]}/>
+        {/* Thermohaline Mixing */}
+        <Fluxes 
+          fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[32, 60]}
+          />
+        <Fluxes 
+          fluxes={[this.props.fluxes.vthermo_PO4_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[48, 50]}
+          />
+        <Fluxes 
+          fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[40, 42]} 
+          id='lohi' 
+          />
+        {/* Diffusive Mixing */}
+        <Fluxes 
+          fluxes={[-this.props.fluxes.vmix_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[22, 60]}
+          />
+        <Fluxes 
+          fluxes={[-this.props.fluxes.vmix_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[58, 50]}
+          />
+        {/* Productivity */}
+        <Fluxes 
+          fluxes={[-this.props.fluxes.prod_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[12, 60]}
+          />
+        <Fluxes 
+          fluxes={[-this.props.fluxes.prod_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.001, 0.1, 0.05]}
+          centre={[68, 50]}
+          />
+        {/* Parameter Selection */}
         <ParamDropdown className='dropdown'
                         params={this.props.ocean_vars}
                         param={this.props.param} 
@@ -93,3 +141,142 @@ export class Schematic extends Component {
     )
   }
 }
+
+class Fluxes extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      arrowWidthPercent: 2,
+      arrowHeightPercent: 10,
+    }
+
+    this.style = {
+      width: this.props.fluxes.length * this.state.arrowWidthPercent + "%",
+      height: this.state.arrowHeightPercent + "%",
+      left: this.props.centre[0] - this.props.fluxes.length * this.state.arrowWidthPercent / 2 + '%',
+      top: this.props.centre[1] - this.state.arrowHeightPercent * 0.5 + "%"
+    }
+  }
+
+  render() {
+    let arrows = [];
+    let n = this.props.fluxes.length;
+    for (let i = 0; i < n; i++) {
+      arrows.push(
+        <Arrow direction={this.props.fluxes[i]} width={100 / n + '%'} amplitude={this.props.sizes[i]}/>
+      )
+    }
+    
+    return (
+      <div className="flux-pane" id={this.props.id} style={this.style}>
+        {arrows}
+      </div>
+    )
+  }
+}
+
+class Arrow extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  size_2_percent(size) {
+    return Math.abs(50 * size / this.props.amplitude) + '%'
+  }
+
+  render() {
+    let arrowStyle = {
+      width: "95%",
+      left: "0%"
+    }
+    if (this.props.direction >= 0) {
+      arrowStyle.bottom = "50%"
+      arrowStyle.height = this.size_2_percent(this.props.direction)
+    } else {
+      arrowStyle.top = "50%"
+      arrowStyle.height = this.size_2_percent(this.props.direction)
+    }
+
+    // console.log(arrowStyle)
+
+    return ( 
+      <div className='flux-box' style={{width: this.props.width}}>
+        <div className='flux-arrow' style={arrowStyle}>
+          
+        </div>
+      </div>
+      )
+  }
+
+}
+
+
+// class hFluxes extends Component {
+//   constructor(props) {
+//     super(props)
+
+//     this.state = {
+//       arrowWidthPercent: 10,
+//       arrowHeightPercent: 2,
+//     }
+
+//     this.style = {
+//       width: this.props.fluxes.length * this.state.arrowWidthPercent + "%",
+//       height: this.state.arrowHeightPercent + "%",
+//       left: this.props.centre[0] - this.props.fluxes.length * this.state.arrowWidthPercent / 2 + '%',
+//       top: this.props.centre[1] - this.state.arrowHeightPercent * 0.5 + "%"
+//     }
+//   }
+
+//   render() {
+//     let arrows = [];
+//     let n = this.props.fluxes.length;
+//     for (let i = 0; i < n; i++) {
+//       arrows.push(
+//         <Arrow direction={this.props.fluxes[i]} width={100 / n + '%'} amplitude={this.props.sizes[i]}/>
+//       )
+//     }
+    
+//     return (
+//       <div className="arrow-pane" style={this.style}>
+//         {arrows}
+//       </div>
+//     )
+//   }
+// }
+
+// class hArrow extends Component {
+//   constructor(props) {
+//     super(props)
+//   }
+
+//   size_2_percent(size) {
+//     return Math.abs(50 * size / this.props.amplitude) + '%'
+//   }
+
+//   render() {
+//     let arrowStyle = {
+//       width: "95%",
+//       left: "0%"
+//     }
+//     if (this.props.direction >= 0) {
+//       arrowStyle.bottom = "50%"
+//       arrowStyle.height = this.size_2_percent(this.props.direction)
+//     } else {
+//       arrowStyle.top = "50%"
+//       arrowStyle.height = this.size_2_percent(this.props.direction)
+//     }
+
+//     // console.log(arrowStyle)
+
+//     return ( 
+//       <div className='flux-box' style={{width: this.props.width}}>
+//         <div className='flux-arrow' style={arrowStyle}>
+          
+//         </div>
+//       </div>
+//       )
+//   }
+
+// }
