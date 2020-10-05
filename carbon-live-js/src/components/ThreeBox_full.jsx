@@ -1,4 +1,4 @@
-import { calc_csys, GtC2uatm } from './csys';
+import { calc_csys, GtC2uatm, moles2uatm, uatm2moles } from './csys';
 
 function calc_percent_CaCO3(c, cb, percent_CaCO3) {
     if (c >= cb) {
@@ -241,48 +241,78 @@ function calc_pCO2_atmos(state) {
     return (state.fCO2_hilat * state.vol_hilat + state.fCO2_lolat * state.vol_lolat) / (state.vol_hilat + state.vol_lolat)
 }
 
+
+// state.vmix * state.PO4_hilat -
+//         state.vmix * state.PO4_deep +
+//         state.vthermo * state.PO4_hilat -
+//         state.vthermo * state.PO4_deep +
+//         (state.PO4_hilat * state.vol_hilat / state.tau_hilat) +
+//         (state.PO4_lolat * state.vol_lolat / state.tau_lolat)) / state.vol_deep
+
+export function calc_fluxes(state) {
+    let fluxes = {};
+    // vmix
+    fluxes.vmix_PO4_hilat = state.vmix * (state.PO4_hilat - state.PO4_deep);
+    // fluxes.vmix_PO4_lolat = state.vmix * (state.PO4_lolat - state.PO4_deep);
+    fluxes.vmix_PO4_lolat = 0;
+    fluxes.vmix_DIC_hilat = state.vmix * (state.DIC_hilat - state.DIC_deep);
+    // fluxes.vmix_DIC_lolat = state.vmix * (state.DIC_lolat - state.DIC_deep);
+    fluxes.vmix_DIC_lolat = 0;
+    fluxes.vmix_TA_hilat = state.vmix * (state.TA_hilat - state.TA_deep);
+    // fluxes.vmix_TA_lolat = state.vmix * (state.TA_lolat - state.TA_deep);
+    fluxes.vmix_TA_lolat = 0;
+
+    // vthermo
+    fluxes.vthermo_PO4_deep = state.vthermo * (state.PO4_hilat - state.PO4_deep);
+    fluxes.vthermo_PO4_lolat = state.vthermo * (state.PO4_deep - state.PO4_lolat);
+    fluxes.vthermo_PO4_hilat = state.vthermo * (state.PO4_lolat - state.PO4_hilat);
+    fluxes.vthermo_DIC_deep = state.vthermo * (state.DIC_hilat - state.DIC_deep);
+    fluxes.vthermo_DIC_lolat = state.vthermo * (state.DIC_deep - state.DIC_lolat);
+    fluxes.vthermo_DIC_hilat = state.vthermo * (state.DIC_lolat - state.DIC_hilat);
+    fluxes.vthermo_TA_deep = state.vthermo * (state.TA_hilat - state.TA_deep);
+    fluxes.vthermo_TA_lolat = state.vthermo * (state.TA_deep - state.TA_lolat);
+    fluxes.vthermo_TA_hilat = state.vthermo * (state.TA_lolat - state.TA_hilat);
+
+    // productivity
+    fluxes.prod_PO4_hilat = (state.PO4_hilat * state.vol_hilat / state.tau_hilat);
+    fluxes.prod_PO4_lolat = (state.PO4_lolat * state.vol_lolat / state.tau_lolat);
+    let f_DIC_lolat = 106 + 106 * state.percent_CaCO3_lolat / 100;
+    let f_DIC_hilat = 106 + 106 * state.percent_CaCO3_hilat / 100;
+    fluxes.prod_DIC_hilat = fluxes.prod_PO4_hilat * f_DIC_hilat
+    fluxes.prod_DIC_lolat = fluxes.prod_PO4_lolat * f_DIC_lolat
+    let f_TA_lolat = 0.15 * 106 + 2 * 106 * state.percent_CaCO3_lolat / 100;
+    let f_TA_hilat = 0.15 * 106 + 2 * 106 * state.percent_CaCO3_hilat / 100;
+    fluxes.prod_TA_hilat = fluxes.prod_PO4_hilat * f_TA_hilat
+    fluxes.prod_TA_lolat = fluxes.prod_PO4_lolat * f_TA_lolat
+
+    // CO2 exchange
+    fluxes.exCO2_lolat = state.kas * state.SA_lolat * (state.pCO2_atmos - state.fCO2_lolat)
+    fluxes.exCO2_hilat = state.kas * state.SA_hilat * (state.pCO2_atmos - state.fCO2_hilat)
+
+    return fluxes
+}
+
 export function step(state, Ks) {
+    let fluxes = calc_fluxes(state);
+    let ifluxes = {};
     let newState = Object.assign({}, state);
 
-    newState.PO4_deep += dPO4_deep(state);
-    newState.PO4_hilat += dPO4_hilat(state);
-    newState.PO4_lolat += dPO4_lolat(state);
+    newState.PO4_deep += (fluxes.vmix_PO4_hilat + fluxes.vmix_PO4_lolat + fluxes.vthermo_PO4_deep + fluxes.prod_PO4_hilat + fluxes.prod_PO4_lolat) / state.vol_deep
+    newState.PO4_hilat += (- fluxes.vmix_PO4_hilat + fluxes.vthermo_PO4_hilat - fluxes.prod_PO4_hilat) / state.vol_hilat
+    newState.PO4_lolat += (- fluxes.vmix_PO4_lolat + fluxes.vthermo_PO4_lolat - fluxes.prod_PO4_lolat) / state.vol_lolat
 
-    newState.DIC_hilat += dDIC_hilat(state, Ks);
-    newState.DIC_lolat += dDIC_lolat(state, Ks);
-    newState.DIC_deep += dDIC_deep(state);
+    newState.DIC_deep += (fluxes.vmix_DIC_hilat + fluxes.vmix_DIC_lolat + fluxes.vthermo_DIC_deep + fluxes.prod_DIC_hilat + fluxes.prod_DIC_lolat) / state.vol_deep
+    newState.DIC_hilat += (- fluxes.vmix_DIC_hilat + fluxes.vthermo_DIC_hilat - fluxes.prod_DIC_hilat + 1e3 * fluxes.exCO2_hilat) / state.vol_hilat
+    newState.DIC_lolat += (- fluxes.vmix_DIC_lolat + fluxes.vthermo_DIC_lolat - fluxes.prod_DIC_lolat + 1e3 * fluxes.exCO2_lolat) / state.vol_lolat
 
-    newState.TA_hilat += dTA_hilat(state);
-    newState.TA_lolat += dTA_lolat(state);
-    newState.TA_deep += dTA_deep(state);
+    newState.TA_deep += (fluxes.vmix_TA_hilat + fluxes.vmix_TA_lolat + fluxes.vthermo_TA_deep + fluxes.prod_TA_hilat + fluxes.prod_TA_lolat) / state.vol_deep
+    newState.TA_hilat += (- fluxes.vmix_TA_hilat + fluxes.vthermo_TA_hilat - fluxes.prod_TA_hilat) / state.vol_hilat
+    newState.TA_lolat += (- fluxes.vmix_TA_lolat + fluxes.vthermo_TA_lolat - fluxes.prod_TA_lolat) / state.vol_lolat
 
-    newState.pCO2_atmos += dpCO2(state, Ks);
-    // dpCO2(state, Ks);
-
-    // newState.pCO2_atmos = calc_pCO2_atmos(state)
+    newState.pCO2_atmos += moles2uatm(- fluxes.exCO2_hilat - fluxes.exCO2_lolat)
 
     newState = update_csys(newState, Ks);
-    // console.log()
-    // total C inventory
-    let C_deep = state.vol_deep * state.DIC_deep * 1e-6 * 12 * 1e-15;
-    let C_hilat = state.vol_hilat * state.DIC_hilat * 1e-6 * 12 * 1e-15;
-    let C_lolat = state.vol_lolat * state.DIC_lolat * 1e-6 * 12 * 1e-15;
-    let total_PgC = C_deep + C_hilat + C_lolat;
-    // console.log(C_deep, C_hilat, C_lolat)
-
-    // let newTotal_C = newState.vol_hilat * newState.DIC_hilat + newState.vol_lolat * newState.DIC_lolat + newState.vol_deep * newState.DIC_deep
-    // let newTotal_PgC = newTotal_C * 12 * 1e-15
-
-
-    // console.log(newTotal_PgC - total_PgC)
-
-    // console.log(
-    //     (newState.vol_hilat * newState.DIC_hilat) / (state.vol_hilat * state.DIC_hilat), 
-    //     (state.vol_lolat * state.DIC_lolat) / (newState.vol_lolat * newState.DIC_lolat),
-    //     (state.vol_deep * state.DIC_deep) / (newState.vol_deep * newState.DIC_deep)
-    // )
-
-    // CO2 flux
+    
     return newState
 }
 
@@ -508,7 +538,7 @@ export const var_info = {
         label: 'pCO2',
         ymin: 350,
         ymax: 450,
-        precision: 6
+        precision: 4
     },
     'temp_lolat': {
         label: 'Temp',
