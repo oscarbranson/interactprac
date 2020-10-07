@@ -118,6 +118,14 @@ body, html {
   height: 100vh;
 }
 
+.schematic-container {
+  margin: auto;
+  padding: 20px;
+  height: 100%;
+  max-width: 1200px;
+  max-height: 800px;
+}
+
 .schematic {
   position: relative;
   width: 100%;
@@ -129,6 +137,16 @@ body, html {
   outline: 4px solid black;
   font-size: calc(9px + 1vmin);
 }
+.box-label {
+  position: absolute;
+  padding: 0.2vh 0.4vh;
+  margin: 0.2vh 0.2vw;
+  right: 0;
+  top: 0;
+  background-color: #3c424e;
+  border-radius: 3px;
+}
+
 .schematic .dropdown {
   position: absolute;
   bottom: 0;
@@ -249,6 +267,10 @@ body, html {
 }
 
 .graph {
+  height: 12vh;
+}
+
+.subgraph {
   height: 12vh;
 }
 

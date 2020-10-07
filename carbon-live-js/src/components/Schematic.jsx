@@ -1,8 +1,44 @@
 import React, { Component } from 'react'
 import { ParamDropdown } from './ParamDropdown'
 import { moles2GtC } from './csys'
+import { SubGraph } from './Graph';
 
 const divid = "threebox"
+
+export class Box extends Component {
+  render() {
+    return (
+    <div className="box" id={this.props.id} 
+    style={{
+      left: this.props.pos[0] + '%',
+      bottom: this.props.pos[1] + '%', 
+      width: this.props.pos[2] + '%', 
+      height: this.props.pos[3] + '%',
+      backgroundColor: this.props.color
+    }}>
+      <div className='box-label' id={this.props.id}>{this.props.value}</div>
+    </div>
+    )
+  }
+}
+
+function mapValue(val, min, max, h, s) {
+  let range = 0.8;
+  return 100 * ((1 - range) / 2 + range * (1 - (val - min) / (max - min)))
+}
+
+function parseHSL(h, s, l) {
+  return "hsl(" + h + "," + s + "%," + l + "%)"
+}
+
+function neg_color(lightness) {
+  let delta_lightness = 50;
+  if (lightness > 50) {
+    return lightness - delta_lightness
+  } else {
+    return lightness + delta_lightness
+  }
+}
 
 export class Schematic extends Component {
 
@@ -24,24 +60,6 @@ export class Schematic extends Component {
     return [gMin, gMax]
   }
   
-  mapValue(val, min, max, h, s) {
-    let range = 0.8;
-    return 100 * ((1 - range) / 2 + range * (1 - (val - min) / (max - min)))
-  }
-
-  parseHSL(h, s, l) {
-    return "hsl(" + h + "," + s + "%," + l + "%)"
-  }
-
-  neg_color(lightness) {
-    let delta_lightness = 50;
-    if (lightness > 50) {
-      return lightness - delta_lightness
-    } else {
-      return lightness + delta_lightness
-    }
-  }
-
   render() {
     let limits = this.getLimits();
     let ind = this.props.npoints - 1;
@@ -51,44 +69,62 @@ export class Schematic extends Component {
     let s = 51;
 
     let val_atmos = this.props.data['pCO2_atmos'][ind];
-    let text_atmos = this.parseHSL(h, s, 10);
+    let text_atmos = parseHSL(h, s, 10);
 
     let val_deep = this.props.data[this.props.param + '_deep'][ind];
-    let l_deep = this.mapValue(val_deep, limits[0], limits[1]);
-    let col_deep = this.parseHSL(h, s, l_deep);
-    let text_deep = this.parseHSL(h, s, this.neg_color(l_deep));
+    let l_deep = mapValue(val_deep, limits[0], limits[1]);
+    let col_deep = parseHSL(h, s, l_deep);
+    let text_deep = parseHSL(h, s, neg_color(l_deep));
 
     let val_lolat = this.props.data[this.props.param + '_lolat'][ind];
-    let l_lolat = this.mapValue(val_lolat, limits[0], limits[1]);
-    let col_lolat = this.parseHSL(h, s, l_lolat);
-    let text_lolat = this.parseHSL(h, s, this.neg_color(l_lolat));
+    let l_lolat = mapValue(val_lolat, limits[0], limits[1]);
+    let col_lolat = parseHSL(h, s, l_lolat);
+    let text_lolat = parseHSL(h, s, neg_color(l_lolat));
     
     let val_hilat = this.props.data[this.props.param + '_hilat'][ind];
-    let l_hilat = this.mapValue(val_hilat, limits[0], limits[1]);
-    let col_hilat = this.parseHSL(h, s, l_hilat);
-    let text_hilat = this.parseHSL(h, s, this.neg_color(l_hilat));
+    let l_hilat = mapValue(val_hilat, limits[0], limits[1]);
+    let col_hilat = parseHSL(h, s, l_hilat);
+    let text_hilat = parseHSL(h, s, neg_color(l_hilat));
 
     // console.log([this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_deep[ind]])
 
     return (
+      <div className="schematic-container">
       <div className="schematic" id={divid}>
+        <SubGraph 
+          npoints = {this.props.data.pCO2_atmos.length}
+          min={300}
+          max={500}
+          id = 'graph_pCO2_atmos'
+          data={this.props.data}
+          param='pCO2_atmos'
+          />
         {/* Boxes */}
-        <div className="box" id="atmos" style={{
-          top: 0, left: 0, width: "100%", height: "20%", textAlign: "right", color: text_atmos,
-          backgroundColor: "white"
-          }}>pCO<sub>2</sub> {val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}</div>
-        <div className="box" id="deep" style={{
-          bottom: 0, left: 0, width: "100%", height: "50%", textAlign: "right", color: text_deep,
-          backgroundColor: col_deep
-          }}>{val_deep.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}</div>
-        <div className="box" id="lolat" style={{
-          top: "20%", right: 0, width: "60%", height: "30%", textAlign: "right", color: text_lolat,
-          backgroundColor: col_lolat
-          }}>{val_lolat.toPrecision(this.props.var_info[this.props.param + '_lolat']['precision'])}</div>
-        <div className="box" id="hilat" style={{
-          top: "20%", left: 0, width: "40%", height: "40%", textAlign: "left", color: text_hilat,
-          backgroundColor: col_hilat
-          }}>{val_hilat.toPrecision(this.props.var_info[this.props.param + '_hilat']['precision'])}</div>
+        <Box 
+          id='atmos'
+          pos = {[0, 80, 100, 20]}
+          color = "white"
+          value = {"pCO2: " + val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}
+        />
+        <Box 
+          id='deep'
+          pos = {[0, 0, 100, 50]}
+          color = {col_deep}
+          value = {val_deep.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+        />
+        <Box 
+          id='lolat'
+          pos = {[40, 50, 60, 30]}
+          color = {col_lolat}
+          value = {val_lolat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+        />
+        <Box 
+          id='hilat'
+          pos = {[0, 40, 40, 40]}
+          color = {col_hilat}
+          value = {val_hilat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+        />
+
         {/* Flux Arrows */}
         {/* CO2 Exchange */}
         <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]}/>
@@ -137,6 +173,7 @@ export class Schematic extends Component {
                         params={this.props.ocean_vars}
                         param={this.props.param} 
                         handleSelect={this.props.handleDropdownSelect}/>
+      </div>
       </div>
     )
   }
