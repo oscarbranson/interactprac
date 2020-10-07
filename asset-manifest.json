@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/interactprac/static/css/main.ccba2dae.chunk.css",
+    "main.js": "/interactprac/static/js/main.e350e06e.chunk.js",
+    "main.js.map": "/interactprac/static/js/main.e350e06e.chunk.js.map",
+    "runtime-main.js": "/interactprac/static/js/runtime-main.cc629ad0.js",
+    "runtime-main.js.map": "/interactprac/static/js/runtime-main.cc629ad0.js.map",
+    "static/css/2.d9d52eda.chunk.css": "/interactprac/static/css/2.d9d52eda.chunk.css",
+    "static/js/2.7da0fb3c.chunk.js": "/interactprac/static/js/2.7da0fb3c.chunk.js",
+    "static/js/2.7da0fb3c.chunk.js.map": "/interactprac/static/js/2.7da0fb3c.chunk.js.map",
+    "index.html": "/interactprac/index.html",
+    "precache-manifest.6030cd2d8cf12852b8fb7a3836e29e1f.js": "/interactprac/precache-manifest.6030cd2d8cf12852b8fb7a3836e29e1f.js",
+    "service-worker.js": "/interactprac/service-worker.js",
+    "static/css/2.d9d52eda.chunk.css.map": "/interactprac/static/css/2.d9d52eda.chunk.css.map",
+    "static/css/main.ccba2dae.chunk.css.map": "/interactprac/static/css/main.ccba2dae.chunk.css.map",
+    "static/js/2.7da0fb3c.chunk.js.LICENSE.txt": "/interactprac/static/js/2.7da0fb3c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cc629ad0.js",
+    "static/css/2.d9d52eda.chunk.css",
+    "static/js/2.7da0fb3c.chunk.js",
+    "static/css/main.ccba2dae.chunk.css",
+    "static/js/main.e350e06e.chunk.js"
+  ]
+}
