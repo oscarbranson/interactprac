@@ -71,7 +71,7 @@ function dDIC_hilat(state, Ks) {
         state.vmix * (state.DIC_deep - state.DIC_hilat)
         + state.vthermo * (state.DIC_lolat - state.DIC_hilat)
         - f_DIC * (state.PO4_hilat * state.vol_hilat / state.tau_hilat)
-        + 1e3 * dCO2_hilat(state, Ks)
+        + 1e6 * dCO2_hilat(state, Ks)
         ) / state.vol_hilat
 }
 
@@ -81,7 +81,7 @@ function dDIC_lolat(state, Ks) {
     return (
         state.vthermo * (state.DIC_deep - state.DIC_lolat)
         - f_DIC * (state.PO4_lolat * state.vol_lolat / state.tau_lolat)
-        + 1e3 * dCO2_lolat(state, Ks)
+        + 1e6 * dCO2_lolat(state, Ks)
         ) / state.vol_lolat
 }
 
@@ -426,8 +426,8 @@ export const var_info = {
     },
     'fCO2_deep': {
         label: 'fCO2',
-        ymin: 200,
-        ymax: 500,
+        ymin: 350,
+        ymax: 450,
         precision: 3
     },
     'CO2_deep': {
@@ -456,8 +456,8 @@ export const var_info = {
     },
     'fCO2_hilat': {
         label: 'fCO2',
-        ymin: 200,
-        ymax: 500,
+        ymin: 350,
+        ymax: 450,
         precision: 3
     },
     'CO2_hilat': {
@@ -486,8 +486,8 @@ export const var_info = {
     },
     'fCO2_lolat': {
         label: 'fCO2',
-        ymin: 200,
-        ymax: 500,
+        ymin: 350,
+        ymax: 450,
         precision: 3
     },
     'CO2_lolat': {

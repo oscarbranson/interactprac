@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { ParamDropdown } from './ParamDropdown'
 import { moles2GtC } from './csys'
-import { SubGraph } from './Graph';
+import { SubGraphPane } from './GraphPane';
+import { var_info, paramLabels } from './ThreeBox_full'
 
 const divid = "threebox"
+
+const flux_colors = ["#e4d269", "#e46969", "#d669e4"]  // PO4, DIC, TA
 
 export class Box extends Component {
   render() {
@@ -69,36 +72,41 @@ export class Schematic extends Component {
     let s = 51;
 
     let val_atmos = this.props.data['pCO2_atmos'][ind];
-    let text_atmos = parseHSL(h, s, 10);
 
     let val_deep = this.props.data[this.props.param + '_deep'][ind];
     let l_deep = mapValue(val_deep, limits[0], limits[1]);
     let col_deep = parseHSL(h, s, l_deep);
-    let text_deep = parseHSL(h, s, neg_color(l_deep));
 
     let val_lolat = this.props.data[this.props.param + '_lolat'][ind];
     let l_lolat = mapValue(val_lolat, limits[0], limits[1]);
     let col_lolat = parseHSL(h, s, l_lolat);
-    let text_lolat = parseHSL(h, s, neg_color(l_lolat));
     
     let val_hilat = this.props.data[this.props.param + '_hilat'][ind];
     let l_hilat = mapValue(val_hilat, limits[0], limits[1]);
     let col_hilat = parseHSL(h, s, l_hilat);
-    let text_hilat = parseHSL(h, s, neg_color(l_hilat));
 
+    // Generate legend
+    let legend_items = [
+      ["#5a6375", 'CO<sub>2</sub>'],
+      ["#e4d269", '[PO<sub>4</sub>]'], 
+      ["#e46969", '[DIC]'], 
+      ["#d669e4", 'Alkalinity']
+    ]
+    let legend = [];
+    for (let i = 0; i < legend_items.length; i++) {
+      // console.log(legend_items[i])
+      legend.push(
+        <div className='legend item'>
+          <div className='legend key' style={{backgroundColor: legend_items[i][0]}}></div>
+          <div className='legend label' dangerouslySetInnerHTML={{__html: legend_items[i][1]}}></div>
+        </div>
+      )
+    }
     // console.log([this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_deep[ind]])
 
     return (
       <div className="schematic-container">
       <div className="schematic" id={divid}>
-        <SubGraph 
-          npoints = {this.props.data.pCO2_atmos.length}
-          min={300}
-          max={500}
-          id = 'graph_pCO2_atmos'
-          data={this.props.data}
-          param='pCO2_atmos'
-          />
         {/* Boxes */}
         <Box 
           id='atmos'
@@ -124,55 +132,106 @@ export class Schematic extends Component {
           color = {col_hilat}
           value = {val_hilat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
         />
+        {/* Graphs */}
+        <SubGraphPane
+          pos = {[38, 84, 22, 12]}
+          data={this.props.data}
+          variables={['pCO2_atmos']}
+          var_info={var_info}
+          id = 'g_atmos'
+        />
+
+        <SubGraphPane
+          pos = {[2, 54, 22, 12]}
+          data={this.props.data}
+          variables={this.props.plot_hilat}
+          var_info={var_info}
+          id = 'g_hilat'
+        />
+
+        <SubGraphPane
+          pos = {[76, 58, 22, 12]}
+          data={this.props.data}
+          variables={this.props.plot_lolat}
+          var_info={var_info}
+          id = 'g_lolat'
+        />
+
+        <SubGraphPane
+          pos = {[38, 10, 22, 12]}
+          data={this.props.data}
+          variables={this.props.plot_deep}
+          var_info={var_info}
+          id = 'g_deep'
+        />
 
         {/* Flux Arrows */}
         {/* CO2 Exchange */}
-        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]}/>
-        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]}/>
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]} colors={["#5a6375"]} label='Gas ex.'/>
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]} colors={["#5a6375"]} label='Gas ex.'/>
         {/* Thermohaline Mixing */}
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[32, 60]}
+          colors={flux_colors}
+          label="V<sub>thermo</sub>"
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[48, 50]}
+          colors={flux_colors}
+          label="V<sub>thermo</sub>"
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[40, 42]} 
+          colors={flux_colors}
           id='lohi' 
+          label="V<sub>thermo</sub>"
           />
         {/* Diffusive Mixing */}
         <Fluxes 
           fluxes={[-this.props.fluxes.vmix_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[22, 60]}
+          centre={[24, 60]}
+          colors={flux_colors}
+          label="V<sub>mix</sub>"
           />
         <Fluxes 
           fluxes={[-this.props.fluxes.vmix_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[58, 50]}
+          centre={[56, 50]}
+          colors={flux_colors}
+          label="V<sub>mix</sub>"
           />
         {/* Productivity */}
         <Fluxes 
           fluxes={[-this.props.fluxes.prod_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[12, 60]}
+          centre={[16, 60]}
+          colors={flux_colors}
+          label="&tau;"
           />
         <Fluxes 
           fluxes={[-this.props.fluxes.prod_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[68, 50]}
+          centre={[64, 50]}
+          colors={flux_colors}
+          label="&tau;"
           />
         {/* Parameter Selection */}
         <ParamDropdown className='dropdown'
                         params={this.props.ocean_vars}
                         param={this.props.param} 
                         handleSelect={this.props.handleDropdownSelect}/>
+        <div className='legend box'>
+          <strong>Fluxes</strong>
+          {legend}
+        </div>
+      
       </div>
       </div>
     )
@@ -184,7 +243,7 @@ class Fluxes extends Component {
     super(props)
 
     this.state = {
-      arrowWidthPercent: 2,
+      arrowWidthPercent: 1,
       arrowHeightPercent: 10,
     }
 
@@ -199,14 +258,28 @@ class Fluxes extends Component {
   render() {
     let arrows = [];
     let n = this.props.fluxes.length;
+    let pos = 0;
     for (let i = 0; i < n; i++) {
       arrows.push(
-        <Arrow direction={this.props.fluxes[i]} width={100 / n + '%'} amplitude={this.props.sizes[i]}/>
+        <Arrow direction={this.props.fluxes[i]} width={100 / n + '%'} amplitude={this.props.sizes[i]} color={this.props.colors[i]}/>
       )
+      if (this.props.fluxes[i] > 0) {
+        pos += 1;
+      } else {
+        pos -= 1;
+      }
     }
     
+    let labelPos = {}
+    if (pos < 0) {
+       labelPos.bottom = '55%'
+      } else {
+        labelPos.top = '55%'
+      }
+
     return (
       <div className="flux-pane" id={this.props.id} style={this.style}>
+        <div className="flux-label" dangerouslySetInnerHTML={{__html: this.props.label}} style={labelPos}></div>
         {arrows}
       </div>
     )
@@ -225,7 +298,8 @@ class Arrow extends Component {
   render() {
     let arrowStyle = {
       width: "95%",
-      left: "0%"
+      left: "0%",
+      backgroundColor: this.props.color
     }
     if (this.props.direction >= 0) {
       arrowStyle.bottom = "50%"

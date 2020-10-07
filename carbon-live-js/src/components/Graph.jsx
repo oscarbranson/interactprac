@@ -176,15 +176,15 @@ export class SubGraph extends Component {
 
   initGraph() {
     // size and padding
-    var margin = 10;
-    var axis_margin = 40;
+    var margin = 6;
+    var axis_margin = 35;
     this.graph.bb = d3.select("#" + this.props.id).node().getBoundingClientRect();
-    console.log(this.graph.bb)
+
     var svg_height = this.graph.bb.height,
         svg_width = this.graph.bb.width;
       
-    var height = svg_height - margin - axis_margin,
-        width = svg_width - margin - axis_margin;
+    var height = svg_height - 2 * margin,
+        width = svg_width - axis_margin;
 
     this.graph.xScale = d3.scaleLinear()
       .domain([0, this.props.npoints])
@@ -197,19 +197,16 @@ export class SubGraph extends Component {
     this.graph.svg = d3.select("#" + this.props.id)
       .append('svg')
         .attr('id', 'svg_' + this.props.id)
-        .attr('width', svg_width)
-        .attr('height', svg_height)
+        .attr('viewBox', `0 0 ${svg_width} ${svg_height}`)
       .append('g')
         .attr('transform', 'translate(' + axis_margin + ', ' + margin + ')')
-        // .attr('transform', 'translate(' + this.graph.bb.width * 0.05 + ', ' + this.graph.bb.height * 0.1 + ')')
-        // .attr('transform', 'translate(0,' + this.graph.bb.height * 0.1 + ')')
     
-    // this.graph.yAxis = d3.axisLeft(this.graph.yScale).ticks(5)
+    this.graph.yAxis = d3.axisLeft(this.graph.yScale).ticks(2)
     
-    // this.graph.svg.append('g')
-    //   .attr("class", "y axis")
-    //   // .attr("transform", "translate(0,0)")
-    //   .call(this.graph.yAxis)
+    this.graph.svg.append('g')
+      .attr("class", "y axis")
+      // .attr("transform", "translate(0,0)")
+      .call(this.graph.yAxis)
     
     // this.graph.svg.append('g')
     //   .attr("class", "x axis")
@@ -268,14 +265,16 @@ export class SubGraph extends Component {
   }
 
   componentDidUpdate() {
-    // this.updateYlim()
+    this.updateYlim()
     this.updateLine()
     // this.updateDataLabel()
   }
 
   render() {
     return (
-      <div className="subgraph" id={this.props.id}></div>
+      <div className="subgraph" id={this.props.id} style={{height: this.props.height}}>
+        <div className="subgraph-label" dangerouslySetInnerHTML={{__html: this.props.label}}></div>
+      </div>
     )
   }
 }

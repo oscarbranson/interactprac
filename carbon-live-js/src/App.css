@@ -28,6 +28,14 @@ body, html {
   color: lightgrey;
 }
 
+hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #3c424e;
+  margin: 2px 0;
+  padding: 0;
+}
+
 #main-panel {
   height: 100vh;
   width: 98vw;
@@ -54,8 +62,8 @@ body, html {
 /* Controls */
 .control-container {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   width: 100vw;
 }
 
@@ -67,6 +75,31 @@ body, html {
   margin-bottom: 1vh;
   height: 15vh;
 }
+
+.disasters {
+  background-color: #5f2222;
+}
+
+.disasters .control-set {
+  background-color: #6d3737;
+}
+
+.disasters button {
+  background-color: #282c34;
+  border-color: #8791a5;
+}
+
+.disasters button:hover{
+  background-color: #9c412b;
+  border-color: #8791a5;
+}
+
+.disasters button:focus{
+  background-color: #9c412b;
+  outline: 0;
+  border-color: #8791a5;
+}
+
 
 .control-section h2 {
   font-size: calc(9px + 1vmin);
@@ -143,7 +176,7 @@ body, html {
   margin: 0.2vh 0.2vw;
   right: 0;
   top: 0;
-  background-color: #3c424e;
+  background-color: #5a6375;
   border-radius: 3px;
 }
 
@@ -159,6 +192,15 @@ body, html {
   position: absolute;
 }
 
+.flux-label {
+  position: absolute;
+  font-size: small;
+  background-color:  rgba(255, 255, 255, 0.3);
+  color: #282c34;
+  padding: 0.3vh 0.5vw;
+  border-radius: 3px;
+}
+
 .flux-box {
   display: block;
   flex-direction: row;
@@ -171,14 +213,41 @@ body, html {
 .flux-arrow {
   display: block;
   position: absolute;
-  background-color: black;
-  /* border: solid 1pt #8791a5; */
-  border-left: solid 1pt #8791a5;
-  border-right: solid 1pt #8791a5;
+  border-radius: 3px;
+  border: solid 1pt #282c34;
 }
 
 #lohi.flux-pane {
   transform: rotate(90deg);
+}
+
+.legend.box {
+  position: absolute;
+  right: 0.5vw;
+  bottom: 0.5vh;
+  padding: 0.6vh 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.legend.item {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.legend.key {
+  width: 2vw;
+  height: 1vh;
+  margin-right: 1vw;
+  border-radius: 3px;
+  border: 1px solid #282c34;
+}
+
+.legend.label {
+  font-size: medium;
 }
 
 
@@ -216,6 +285,8 @@ body, html {
   min-width: 4em;
   width: 6vw;
   font-size: calc(8px + 1vmin);
+  /* background-color: #d669e4; */
+
 }
 
 #plot-controls .btn-primary {
@@ -270,8 +341,27 @@ body, html {
   height: 12vh;
 }
 
+.graph-pane {
+  position: absolute;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid #3c424e;
+  border-radius: 3px;
+}
+
 .subgraph {
-  height: 12vh;
+  height: 95%;
+  width: 100%;
+  color: #282c34;
+  position: relative;
+}
+
+.subgraph-label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-right: 0.4vw;
+  font-size: medium;
 }
 
 .graph-label {
@@ -286,19 +376,24 @@ svg path {
   stroke-width: 2px;
 }
 
-.axis path,
+.axis path {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+
 .axis line {
   fill: none;
-  stroke: lightgrey;
+  stroke: #282c34;
   shape-rendering: crispEdges;
 }
 
 .ylabel {
-  fill: lightgray;
+  fill: #282c34;
 }
 
 .data-label {
-  fill: lightgray
+  fill: #282c34
 }
 
 

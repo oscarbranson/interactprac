@@ -107,8 +107,8 @@ export class Disasters extends React.Component {
 
     render () {
         return (
-        <div className="control-section" style={{zIndex: 5}}>
-            <h2>Disasters</h2>
+        <div className="control-section disasters" style={{zIndex: 5}}>
+            <h2>Disasters: {this.props.GtC_released.toFixed(2)} GtC</h2>
             <div className="model-controls">
             <div className="control-set">
                 <h3>Volcano</h3>
@@ -117,11 +117,11 @@ export class Disasters extends React.Component {
                 <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
             </div>
             <div className="control-set">
-                <h3>Humans</h3>
+                <h3>Fossil Fuels</h3>
                 <Button onClick={this.handleEmissions} size="sm">{this.state.emitLabel}</Button>
-                <div className="control-value">
-                {this.props.GtC_released} GtC
-                </div>
+                {/* <div className="control-value">
+                
+                </div> */}
             </div>
             </div>
         </div>

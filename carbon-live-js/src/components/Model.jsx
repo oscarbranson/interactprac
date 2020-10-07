@@ -38,11 +38,11 @@ export class Model extends React.Component {
         this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
-        this.state['ocean_vars'] = ['PO4', 'TA', 'DIC', 'pH', 'fCO2', 'CO3', 'HCO3', 'c'];
+        this.state['ocean_vars'] = ['fCO2', 'DIC', 'TA', 'pH', 'CO3', 'HCO3', 'c', 'PO4'];
         this.state['plot_atmos'] = ['pCO2_atmos',];
-        this.state['plot_ocean'] = ['PO4']
+        this.state['plot_ocean'] = ['fCO2']
         for (let box of ['_deep', '_hilat', '_lolat']) {
-            this.state['plot' + box] = ['PO4' + box]
+            this.state['plot' + box] = [this.state.plot_ocean[0] + box]
         }
 
         // Whether or not to run the model.
@@ -105,7 +105,8 @@ export class Model extends React.Component {
             now: start_state, 
             fluxes: calc_fluxes(start_state),
             history: this.updateHistory(start_state),
-            Ks: this.genKs(start_state)});
+            Ks: this.genKs(start_state),
+            GtC_released: 0})
     }
 
     stepModel() {
@@ -140,7 +141,7 @@ export class Model extends React.Component {
     }
 
     handleParamButtonChange(params) {
-        this.setState({plot_ocean: params})
+        // this.setState({plot_ocean: params})
         this.genPlotVars(params)
         // console.log(params)
     }
@@ -149,7 +150,8 @@ export class Model extends React.Component {
         // Size of eruption (Pinatubo = 0.05 Gt CO2, or 0.05 * 0.272 Gt C)
         let newState = this.state.now
         newState.pCO2_atmos += GtC2uatm(GtC)
-        this.setState({now: newState});
+        // console.log([GtC, GtC2uatm(GtC)])
+        this.setState({now: newState, GtC_released: this.state.GtC_released + GtC});
     }
 
     toggleEmissions() {
@@ -227,7 +229,8 @@ export class Model extends React.Component {
             </div>
             <div className='main-display'>
             {/* <div id='schematic-container'> */}
-                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect}/>
+                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect} 
+                           plot_hilat={this.state.plot_hilat} plot_lolat={this.state.plot_lolat} plot_deep={this.state.plot_deep}/>
             {/* </div> */}
             </div>
             <div className="bottom-bar">
