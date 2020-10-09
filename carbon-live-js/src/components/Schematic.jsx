@@ -6,7 +6,9 @@ import { var_info, paramLabels } from './ThreeBox_full'
 
 const divid = "threebox"
 
-const flux_colors = ["#e4d269", "#e46969", "#d669e4"]  // PO4, DIC, TA
+const flux_labels = ['CO<sub>2</sub>', '[PO<sub>4</sub>]', '[DIC]', 'Alkalinity']
+const flux_colors = ["#888e9b", "#d3ca98", "#e98787", "#e7abef"]  // CO2, PO4, DIC, TA
+const plot_bkg = "black"
 
 export class Box extends Component {
   render() {
@@ -86,19 +88,13 @@ export class Schematic extends Component {
     let col_hilat = parseHSL(h, s, l_hilat);
 
     // Generate legend
-    let legend_items = [
-      ["#5a6375", 'CO<sub>2</sub>'],
-      ["#e4d269", '[PO<sub>4</sub>]'], 
-      ["#e46969", '[DIC]'], 
-      ["#d669e4", 'Alkalinity']
-    ]
     let legend = [];
-    for (let i = 0; i < legend_items.length; i++) {
+    for (let i = 0; i < flux_colors.length; i++) {
       // console.log(legend_items[i])
       legend.push(
         <div className='legend item'>
-          <div className='legend key' style={{backgroundColor: legend_items[i][0]}}></div>
-          <div className='legend label' dangerouslySetInnerHTML={{__html: legend_items[i][1]}}></div>
+          <div className='legend key' style={{backgroundColor: flux_colors[i]}}></div>
+          <div className='legend label' dangerouslySetInnerHTML={{__html: flux_labels[i]}}></div>
         </div>
       )
     }
@@ -167,28 +163,28 @@ export class Schematic extends Component {
 
         {/* Flux Arrows */}
         {/* CO2 Exchange */}
-        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]} colors={["#5a6375"]} label='Gas ex.'/>
-        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]} colors={["#5a6375"]} label='Gas ex.'/>
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_hilat)]} sizes={[0.3]} centre={[18, 20]} colors={[flux_colors[0]]} label='Gas exch.' id='gas'/>
+        <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]} colors={[flux_colors[0]]} label='Gas exch.' id='gas'/>
         {/* Thermohaline Mixing */}
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[32, 60]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="V<sub>thermo</sub>"
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[48, 50]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="V<sub>thermo</sub>"
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[40, 42]} 
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           id='lohi' 
           label="V<sub>thermo</sub>"
           />
@@ -197,14 +193,14 @@ export class Schematic extends Component {
           fluxes={[-this.props.fluxes.vmix_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[24, 60]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="V<sub>mix</sub>"
           />
         <Fluxes 
           fluxes={[-this.props.fluxes.vmix_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[56, 50]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="V<sub>mix</sub>"
           />
         {/* Productivity */}
@@ -212,23 +208,23 @@ export class Schematic extends Component {
           fluxes={[-this.props.fluxes.prod_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[16, 60]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="&tau;"
           />
         <Fluxes 
           fluxes={[-this.props.fluxes.prod_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
           centre={[64, 50]}
-          colors={flux_colors}
+          colors={flux_colors.slice(1)}
           label="&tau;"
           />
         {/* Parameter Selection */}
-        <ParamDropdown className='dropdown'
+        {/* <ParamDropdown className='dropdown'
                         params={this.props.ocean_vars}
                         param={this.props.param} 
-                        handleSelect={this.props.handleDropdownSelect}/>
+                        handleSelect={this.props.handleDropdownSelect}/> */}
         <div className='legend box'>
-          <strong>Fluxes</strong>
+          <h3>Net Fluxes</h3>
           {legend}
         </div>
       

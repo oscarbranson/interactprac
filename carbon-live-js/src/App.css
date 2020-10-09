@@ -96,8 +96,14 @@ hr {
 
 .disasters button:focus{
   background-color: #9c412b;
-  outline: 0;
   border-color: #8791a5;
+  box-shadow: unset;
+}
+
+.disasters button{
+  background-color: #9c412b;
+  border-color: #8791a5;
+  box-shadow: unset;
 }
 
 
@@ -155,8 +161,8 @@ hr {
   margin: auto;
   padding: 20px;
   height: 100%;
-  max-width: 1200px;
-  max-height: 800px;
+  /* max-width: 1200px;
+  max-height: 1000px; */
 }
 
 .schematic {
@@ -194,11 +200,18 @@ hr {
 
 .flux-label {
   position: absolute;
-  font-size: small;
-  background-color:  rgba(255, 255, 255, 0.3);
+  font-size: calc(2px + 1vmin);
+  background-color:  rgba(255, 255, 255, 0.5);
   color: #282c34;
   padding: 0.3vh 0.5vw;
   border-radius: 3px;
+  text-align: center;
+  width: 100%;
+}
+
+#gas > .flux-label{
+  width: 260%;
+  left: -80%;
 }
 
 .flux-box {
@@ -226,9 +239,13 @@ hr {
   right: 0.5vw;
   bottom: 0.5vh;
   padding: 0.6vh 1vw;
+  border-radius: 3px;
+  background-color:  rgba(255, 255, 255, 0.5);
+  outline: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  color: #282c34;
 }
 
 .legend.item {
@@ -247,7 +264,13 @@ hr {
 }
 
 .legend.label {
-  font-size: medium;
+  font-size: calc(4px + 1vmin);
+}
+
+.legend h3 {
+  font-size: calc(9px + 1vmin);
+  font-weight: bold;
+  margin: 0 0 0.2vh 0;
 }
 
 
@@ -264,8 +287,17 @@ hr {
   min-height: 5vh;
 }
 
+#start-stop > button:focus {
+  box-shadow: unset;
+}
+
+/* #model-reset:active {
+  background-color: lime;
+} */
+
 .model-controls {
   display: flex;
+  justify-content: space-evenly;
   padding-left: 0.15vw;
   padding-right: 0.15vw;
   min-height: 12.6vh;
@@ -275,8 +307,8 @@ hr {
   margin-top: 0.5vh;
   margin-right: 1vw;
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: space-evenly;
   width: 100%;
   height: 4vh;
 }
@@ -286,7 +318,6 @@ hr {
   width: 6vw;
   font-size: calc(8px + 1vmin);
   /* background-color: #d669e4; */
-
 }
 
 #plot-controls .btn-primary {
@@ -344,7 +375,7 @@ hr {
 .graph-pane {
   position: absolute;
   overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
   border: 1px solid #3c424e;
   border-radius: 3px;
 }
@@ -359,8 +390,10 @@ hr {
 .subgraph-label {
   position: absolute;
   right: 0;
-  top: 0;
-  padding-right: 0.4vw;
+  bottom: 100;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0.2vh 0.4vw;
+  border-radius: 3px;
   font-size: medium;
 }
 
@@ -372,7 +405,7 @@ hr {
 
 svg path {
   fill: none;
-  stroke: #6699ff;
+  stroke: #282c34;
   stroke-width: 2px;
 }
 

@@ -1,14 +1,19 @@
 import React from 'react';
 import { start_state, step, calc_fluxes, var_info} from './ThreeBox_full';
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Button from 'react-bootstrap/Button'
+import ToggleButton from 'react-bootstrap/ToggleButton'
 import { Disasters, ModelControls } from './ModelControls'
 import { GraphPane } from './GraphPane';
 import { Schematic } from './Schematic';
-import { ParamButtons } from './ParamButtons';
+import { ParamButtons, ParamToggle } from './ParamButtons';
 import {calc_Ks, GtC2uatm, moles2uatm} from './csys'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 const frameTime = 50;
-const npoints = 100;
+const npoints = 200;
 
 export class Model extends React.Component {
     constructor(props) {
@@ -19,7 +24,7 @@ export class Model extends React.Component {
             start_state: start_state,
             now: start_state,
             history: {},
-            fluxes: calc_fluxes(start_state)
+            fluxes: calc_fluxes(start_state),
         };
         // Calculate Ks
         this.state['Ks'] = this.genKs(start_state)
@@ -48,6 +53,7 @@ export class Model extends React.Component {
         // Whether or not to run the model.
         this.state['start_stop_button'] = "Stop";
 
+        this.state.running = true;
         this.interval = null;
 
         this.emitting = false;
@@ -64,6 +70,7 @@ export class Model extends React.Component {
 
         this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
         this.handleParamButtonChange = this.handleParamButtonChange.bind(this)
+        this.handleParamToggle = this.handleParamToggle.bind(this)
         this.handleParamUpdate = this.handleParamUpdate.bind(this)
 
         this.handleVolcano = this.handleVolcano.bind(this)
@@ -83,11 +90,13 @@ export class Model extends React.Component {
                 this.stepModel()
             }, frameTime);
         }
+        this.setState({running: true})
     }
 
     stopSimulation() {
         clearInterval(this.interval);
         this.interval = null;
+        this.setState({running: false})
     }
 
     toggleSimulation() {
@@ -96,7 +105,7 @@ export class Model extends React.Component {
             this.setState({start_stop_button: "Stop"})
         }  else {
             this.stopSimulation()
-            this.setState({start_stop_button: "Start"})
+            this.setState({start_stop_button: "Run"})
         }
     }
 
@@ -142,8 +151,16 @@ export class Model extends React.Component {
 
     handleParamButtonChange(params) {
         // this.setState({plot_ocean: params})
-        this.genPlotVars(params)
+        this.setState(this.genPlotVars(params))
         // console.log(params)
+    }
+
+    handleParamToggle(param) {
+        // this.setState({plot_ocean: params})
+        // this.genPlotVars(params)
+        let newState = this.genPlotVars([param])
+        newState.schematicParam = param
+        this.setState(newState)
     }
 
     handleVolcano(GtC) {
@@ -184,7 +201,7 @@ export class Model extends React.Component {
                 plotvars['plot' + box].push(p + box)
             }
         }
-        this.setState(plotvars)
+        return plotvars
     }
 
     genKs(state) {
@@ -235,10 +252,14 @@ export class Model extends React.Component {
             </div>
             <div className="bottom-bar">
                 <div id="plot-controls">
-                    <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/>
+                    {/* <ParamButtons id='plot-param-controls' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamButtonChange}/> */}
+                    <ParamToggle id='plot-param-toggle' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamToggle}/>
                     <div id='start-stop'>
-                        <Button onClick={this.resetModel} variant="outline-secondary" size="sm">Reset</Button>
-                        <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm">{this.state.start_stop_button}</Button>
+                    <Button onClick={this.resetModel} variant="outline-secondary" size="sm" id='model-reset'>Reset</Button>
+                    {/* <ButtonGroup> */}
+                        {/* <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button> */}
+                        <ToggleButton type="checkbox" variant="outline-secondary" onChange={this.toggleSimulation} value={1}>{this.state.start_stop_button}</ToggleButton>
+                    {/* </ButtonGroup> */}
                     </div>
                 </div>
             </div>

@@ -108,20 +108,20 @@ export class Disasters extends React.Component {
     render () {
         return (
         <div className="control-section disasters" style={{zIndex: 5}}>
-            <h2>Disasters: {this.props.GtC_released.toFixed(2)} GtC</h2>
+            <h2>Carbon Release: {this.props.GtC_released.toFixed(2)} GtC</h2>
             <div className="model-controls">
-            <div className="control-set">
-                <h3>Volcano</h3>
-                {/* <VerticalSlider/> */}
-                {/* <Button size="sm">St. Helens</Button> */}
-                <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
-            </div>
             <div className="control-set">
                 <h3>Fossil Fuels</h3>
                 <Button onClick={this.handleEmissions} size="sm">{this.state.emitLabel}</Button>
                 {/* <div className="control-value">
                 
                 </div> */}
+            </div>
+            <div className="control-set">
+                <h3>Volcano</h3>
+                {/* <VerticalSlider/> */}
+                {/* <Button size="sm">St. Helens</Button> */}
+                <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
             </div>
             </div>
         </div>
