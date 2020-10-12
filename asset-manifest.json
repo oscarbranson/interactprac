@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/interactprac/static/css/main.0584bfe2.chunk.css",
-    "main.js": "/interactprac/static/js/main.0e82ce98.chunk.js",
-    "main.js.map": "/interactprac/static/js/main.0e82ce98.chunk.js.map",
+    "main.js": "/interactprac/static/js/main.65bccdec.chunk.js",
+    "main.js.map": "/interactprac/static/js/main.65bccdec.chunk.js.map",
     "runtime-main.js": "/interactprac/static/js/runtime-main.cc629ad0.js",
     "runtime-main.js.map": "/interactprac/static/js/runtime-main.cc629ad0.js.map",
     "static/css/2.d9d52eda.chunk.css": "/interactprac/static/css/2.d9d52eda.chunk.css",
     "static/js/2.6961f724.chunk.js": "/interactprac/static/js/2.6961f724.chunk.js",
     "static/js/2.6961f724.chunk.js.map": "/interactprac/static/js/2.6961f724.chunk.js.map",
     "index.html": "/interactprac/index.html",
-    "precache-manifest.c6517f4b67773220176da1b24f37b530.js": "/interactprac/precache-manifest.c6517f4b67773220176da1b24f37b530.js",
+    "precache-manifest.00a2d81265c7720b3ee74d1e933c9878.js": "/interactprac/precache-manifest.00a2d81265c7720b3ee74d1e933c9878.js",
     "service-worker.js": "/interactprac/service-worker.js",
     "static/css/2.d9d52eda.chunk.css.map": "/interactprac/static/css/2.d9d52eda.chunk.css.map",
     "static/css/main.0584bfe2.chunk.css.map": "/interactprac/static/css/main.0584bfe2.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.d9d52eda.chunk.css",
     "static/js/2.6961f724.chunk.js",
     "static/css/main.0584bfe2.chunk.css",
-    "static/js/main.0e82ce98.chunk.js"
+    "static/js/main.65bccdec.chunk.js"
   ]
 }

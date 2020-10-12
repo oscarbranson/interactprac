@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "09c3e776f916863cecf696c359071fa5",
+    "revision": "d74b334afa966ca7db12dd62667ee5cd",
     "url": "/interactprac/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/interactprac/static/css/2.d9d52eda.chunk.css"
   },
   {
-    "revision": "8e9694453504544a9756",
+    "revision": "1e376a4d5c6c8b1ac144",
     "url": "/interactprac/static/css/main.0584bfe2.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/interactprac/static/js/2.6961f724.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "8e9694453504544a9756",
-    "url": "/interactprac/static/js/main.0e82ce98.chunk.js"
+    "revision": "1e376a4d5c6c8b1ac144",
+    "url": "/interactprac/static/js/main.65bccdec.chunk.js"
   },
   {
     "revision": "9b7f5051bf0b3c1d3f3e",
