@@ -428,6 +428,12 @@ export const var_info = {
         ymax: 450,
         precision: 4
     },
+    'pCO2_atmos_noExch': {
+        label: 'pCO2',
+        ymin: 350,
+        ymax: 450,
+        precision: 4
+    },
     'temp_lolat': {
         label: 'Temp',
         ymin: 20,

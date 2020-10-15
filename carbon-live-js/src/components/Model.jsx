@@ -6,12 +6,12 @@ import FormControl from 'react-bootstrap/FormControl'
 import { Disasters, ModelControls } from './ModelControls'
 import { Schematic } from './Schematic';
 import { ParamToggle } from './ParamButtons';
-import {calc_Ks, GtC2uatm} from './csys'
+import {calc_Ks, GtC2uatm, uatm2GtC} from './csys'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { thresholdScott } from 'd3';
 
-
+const GtC_atmos_0 = uatm2GtC(372.8);
 const frameTime = 20;
 const npoints = 200;
 
@@ -130,6 +130,8 @@ export class Model extends React.Component {
         let fluxes = calc_fluxes(newState)
 
         newState = step(newState, fluxes, this.state.Ks);
+        // pCO2 if no ocean interaction
+        newState.pCO2_atmos_noExch = GtC2uatm(GtC_atmos_0 + this.state.GtC_released)
         // update state
         this.setState({
             now: newState, 
@@ -148,6 +150,7 @@ export class Model extends React.Component {
             }
             newHistory[key].push(newState[key])
         }
+        
         return newHistory
     }
 

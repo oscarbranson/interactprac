@@ -153,6 +153,15 @@ export class Schematic extends Component {
         />
 
         <SubGraphPane
+          pos = {[68, 84, 22, 12]}
+          data={this.props.data}
+          npoints={this.props.npoints}
+          variables={['pCO2_atmos_noExch']}
+          var_info={var_info}
+          id = 'g_atmos_noex'
+        />
+
+        <SubGraphPane
           pos = {[2, 54, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
