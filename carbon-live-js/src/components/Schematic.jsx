@@ -21,7 +21,8 @@ export class Box extends Component {
       height: this.props.pos[3] + '%',
       backgroundColor: this.props.color
     }}>
-      <div className='box-label' id={this.props.id}>{this.props.value}</div>
+      <div className='box-value' id={this.props.id}>{this.props.value}</div>
+      <div className='box-label' id={this.props.id}>{this.props.label}</div>
     </div>
     )
   }
@@ -99,7 +100,6 @@ export class Schematic extends Component {
       )
     }
     // console.log([this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_deep[ind]])
-
     return (
       <div className="schematic-container">
       <div className="schematic" id={divid}>
@@ -109,24 +109,28 @@ export class Schematic extends Component {
           pos = {[0, 80, 100, 20]}
           color = "white"
           value = {"pCO2: " + val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}
+          label = "Atmosphere"
         />
         <Box 
           id='deep'
           pos = {[0, 0, 100, 50]}
           color = {col_deep}
           value = {val_deep.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+          label = "Deep Ocean"
         />
         <Box 
           id='lolat'
           pos = {[40, 50, 60, 30]}
           color = {col_lolat}
           value = {val_lolat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+          label = "Low Lat. Surface Ocean"
         />
         <Box 
           id='hilat'
           pos = {[0, 40, 40, 40]}
           color = {col_hilat}
           value = {val_hilat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
+          label = "High Lat. Surface Ocean"
         />
         {/* Graphs */}
         <SubGraphPane
