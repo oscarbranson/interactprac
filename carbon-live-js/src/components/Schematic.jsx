@@ -68,7 +68,7 @@ export class Schematic extends Component {
   
   render() {
     let limits = this.getLimits();
-    let ind = this.props.npoints - 1;
+    let ind = this.props.data['pCO2_atmos'].length - 1;
 
     // Define color pallette
     let h = 200;
@@ -146,6 +146,7 @@ export class Schematic extends Component {
         <SubGraphPane
           pos = {[38, 84, 22, 12]}
           data={this.props.data}
+          npoints={this.props.npoints}
           variables={['pCO2_atmos']}
           var_info={var_info}
           id = 'g_atmos'
@@ -154,6 +155,7 @@ export class Schematic extends Component {
         <SubGraphPane
           pos = {[2, 54, 22, 12]}
           data={this.props.data}
+          npoints={this.props.npoints}
           variables={this.props.plot_hilat}
           var_info={var_info}
           id = 'g_hilat'
@@ -162,6 +164,7 @@ export class Schematic extends Component {
         <SubGraphPane
           pos = {[76, 58, 22, 12]}
           data={this.props.data}
+          npoints={this.props.npoints}
           variables={this.props.plot_lolat}
           var_info={var_info}
           id = 'g_lolat'
@@ -170,6 +173,7 @@ export class Schematic extends Component {
         <SubGraphPane
           pos = {[38, 10, 22, 12]}
           data={this.props.data}
+          npoints={this.props.npoints}
           variables={this.props.plot_deep}
           var_info={var_info}
           id = 'g_deep'
@@ -190,14 +194,14 @@ export class Schematic extends Component {
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[48, 50]}
+          centre={[43, 50]}
           colors={flux_colors.slice(1)}
           label="V<sub>thermo</sub>"
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
           sizes={[0.001, 0.1, 0.05]}
-          centre={[40, 42]} 
+          centre={[35, 42]} 
           colors={flux_colors.slice(1)}
           id='lohi' 
           label="V<sub>thermo</sub>"
