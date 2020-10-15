@@ -50,6 +50,7 @@ export class VerticalSlider extends React.Component {
                 onChange={this.handleChange}
                 format={this.fmtLabel}
                 labels={this.props.labels}
+                step={this.props.step}
             />
         )
     }

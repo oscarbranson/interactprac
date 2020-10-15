@@ -33,6 +33,11 @@ const sliderLabels = {
     temp_lolat: {[start_state.temp_lolat]: ''},
 }
 
+const slidersteps = {
+    temp_hilat: 0.1,
+    temp_lolat: 0.1,
+}
+
 const labels = {
     vthermo: 'V<sub>thermo</sub>',
     vmix: 'V<sub>mix</sub>',
@@ -67,10 +72,11 @@ export class ControlSet extends React.Component {
     render () {
         let min = paramFormats[this.props.param][2];
         let max = paramFormats[this.props.param][3];
+
         return (
             <div className="control-set">
                 <h3 dangerouslySetInnerHTML={{__html: labels[this.props.param]}}></h3>
-                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]}/>
+                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]} step={slidersteps[this.props.param]}/>
                 <div className="control-value">
                 {paramFormats[this.props.param][0](this.props.value, paramFormats[this.props.param][1])}
                 </div>
