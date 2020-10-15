@@ -231,7 +231,7 @@ hr {
   border-radius: 3px;
   text-align: center;
   width: 100%;
-  min-width: 60px;
+  min-width: 40px;
 }
 
 #gas > .flux-label{
