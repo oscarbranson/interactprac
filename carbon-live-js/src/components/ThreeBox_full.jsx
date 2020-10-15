@@ -1,4 +1,4 @@
-import { calc_csys, moles2uatm } from './csys';
+import { calc_csys, calc_Ks, moles2uatm } from './csys';
 
 // Form from Zeebe 2012 (LOSCAR)
 function dCO2_lolat(state, Ks) {
@@ -37,7 +37,7 @@ const vol_lolat = SA_ocean * fSA_lolat * depth_lolat;  // m3
 // const vthermo = 20;  // Sv
 // const vmix = 10;  // Sv
 
-export const start_state = {
+export var start_state = {
     'kas': 0.02,  // air-sea gas exchange mol (uatm m2 yr-1)-1
     // 'vmix': 1.2e15,
     'vmix': 1.89e15,  // m3 yr-1
@@ -67,39 +67,17 @@ export const start_state = {
     'sal_lolat': 35.15,
     'sal_hilat': 33.5,
     'sal_deep': 34.72,
-    'PO4_lolat': 0.0484,  //0.31,
-    'PO4_hilat': 1.66,  //(0.89 + 1.54) / 2,
+    'PO4_lolat': 0.182,  //0.31,
+    'PO4_hilat': 1.68,  //(0.89 + 1.54) / 2,
     'PO4_deep': 2.38,
-    'DIC_lolat': 1958, // 1972,  //1958,  // total_DIC,
-    'DIC_hilat': 2006,  // 2192,  //(2006 + 2082) / 2,  // total_DIC,
-    'DIC_deep': 2260,  //2279,  // total_DIC,
-    'TA_lolat': 2315,  // 2244,  // 2315,  // total_TA,
-    'TA_hilat': 2291,  //2341,  // (2257 + 2291) / 2,  // total_TA,
-    'TA_deep': 2380.4,  // total_TA,
-    'c_lolat': 1,
-    'c_hilat': 1,
-    'c_deep': 1,
-    'fCO2_lolat': 399,
-    'fCO2_hilat': 369,
-    'fCO2_deep': 502,
-    'pCO2_lolat': 399,
-    'pCO2_hilat': 369,
-    'pCO2_deep': 502,
-    'pH_lolat': 7.99,
-    'pH_hilat': 8.23,
-    'pH_deep': 7.97,
-    'CO2_lolat': 9,
-    'CO2_hilat': 9,
-    'CO2_deep': 9,
-    'HCO3_lolat': 1900,
-    'HCO3_hilat': 1900,
-    'HCO3_deep': 1900,
-    'CO3_lolat': 300,
-    'CO3_hilat': 300,
-    'CO3_deep': 300,
-    'pCO2_atmos': 389,
+    'DIC_lolat': 1969, // 1972,  //1958,  // total_DIC,
+    'DIC_hilat': 2183.1,  // 2192,  //(2006 + 2082) / 2,  // total_DIC,
+    'DIC_deep': 2260.5,  //2279,  // total_DIC,
+    'TA_lolat': 2253.4,  // 2244,  // 2315,  // total_TA,
+    'TA_hilat': 2344.1,  //2341,  // (2257 + 2291) / 2,  // total_TA,
+    'TA_deep': 2381.4,  // total_TA,
+    'pCO2_atmos': 373,
 };
-
 
 function update_csys(state, Ks) {
     let csys_deep = calc_csys({
@@ -131,6 +109,13 @@ function update_csys(state, Ks) {
 
     return state
 }
+
+// update carbon system of start_state
+let Ks = {};
+for (let box of ['hilat', 'lolat', 'deep']) {
+    Ks[box] = calc_Ks({Tc: start_state['temp_' + box], Sal: start_state['sal_' + box]})
+}
+start_state = update_csys(start_state, Ks)
 
 
 export function calc_fluxes(state) {
