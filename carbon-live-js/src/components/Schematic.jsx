@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ParamDropdown } from './ParamDropdown'
-import { moles2GtC } from './csys'
+import { moles2GtC, uatm2GtC } from './csys'
 import { SubGraphPane } from './GraphPane';
 import { var_info, paramLabels } from './ThreeBox_full'
 
@@ -22,7 +22,7 @@ export class Box extends Component {
       backgroundColor: this.props.color
     }}>
       <div className='box-value' id={this.props.id}>{this.props.value}</div>
-      <div className='box-label' id={this.props.id}>{this.props.label}</div>
+      <div className='box-label' id={this.props.id}>{this.props.label + ': ' + this.props.GtC.toFixed(0) + ' GtC'}</div>
     </div>
     )
   }
@@ -88,6 +88,12 @@ export class Schematic extends Component {
     let l_hilat = mapValue(val_hilat, limits[0], limits[1]);
     let col_hilat = parseHSL(h, s, l_hilat);
 
+    // GtC in each reservoir
+    let GtC_atmos = uatm2GtC(this.props.data['pCO2_atmos'][ind])
+    let GtC_deep = moles2GtC(this.props.data['DIC_deep'][ind] * 1e-3 * this.props.data['vol_deep'][ind])
+    let GtC_lolat = moles2GtC(this.props.data['DIC_lolat'][ind] * 1e-3 * this.props.data['vol_lolat'][ind])
+    let GtC_hilat = moles2GtC(this.props.data['DIC_hilat'][ind] * 1e-3 * this.props.data['vol_hilat'][ind])
+
     // Generate legend
     let legend = [];
     for (let i = 0; i < flux_colors.length; i++) {
@@ -110,6 +116,7 @@ export class Schematic extends Component {
           color = "white"
           value = {"pCO2: " + val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}
           label = "Atmosphere"
+          GtC = {GtC_atmos}
         />
         <Box 
           id='deep'
@@ -117,6 +124,7 @@ export class Schematic extends Component {
           color = {col_deep}
           value = {val_deep.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
           label = "Deep Ocean"
+          GtC = {GtC_deep}
         />
         <Box 
           id='lolat'
@@ -124,6 +132,7 @@ export class Schematic extends Component {
           color = {col_lolat}
           value = {val_lolat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
           label = "Low Lat. Surface Ocean"
+          GtC = {GtC_lolat}
         />
         <Box 
           id='hilat'
@@ -131,6 +140,7 @@ export class Schematic extends Component {
           color = {col_hilat}
           value = {val_hilat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
           label = "High Lat. Surface Ocean"
+          GtC = {GtC_hilat}
         />
         {/* Graphs */}
         <SubGraphPane
@@ -321,73 +331,3 @@ class Arrow extends Component {
   }
 
 }
-
-
-// class hFluxes extends Component {
-//   constructor(props) {
-//     super(props)
-
-//     this.state = {
-//       arrowWidthPercent: 10,
-//       arrowHeightPercent: 2,
-//     }
-
-//     this.style = {
-//       width: this.props.fluxes.length * this.state.arrowWidthPercent + "%",
-//       height: this.state.arrowHeightPercent + "%",
-//       left: this.props.centre[0] - this.props.fluxes.length * this.state.arrowWidthPercent / 2 + '%',
-//       top: this.props.centre[1] - this.state.arrowHeightPercent * 0.5 + "%"
-//     }
-//   }
-
-//   render() {
-//     let arrows = [];
-//     let n = this.props.fluxes.length;
-//     for (let i = 0; i < n; i++) {
-//       arrows.push(
-//         <Arrow direction={this.props.fluxes[i]} width={100 / n + '%'} amplitude={this.props.sizes[i]}/>
-//       )
-//     }
-    
-//     return (
-//       <div className="arrow-pane" style={this.style}>
-//         {arrows}
-//       </div>
-//     )
-//   }
-// }
-
-// class hArrow extends Component {
-//   constructor(props) {
-//     super(props)
-//   }
-
-//   size_2_percent(size) {
-//     return Math.abs(50 * size / this.props.amplitude) + '%'
-//   }
-
-//   render() {
-//     let arrowStyle = {
-//       width: "95%",
-//       left: "0%"
-//     }
-//     if (this.props.direction >= 0) {
-//       arrowStyle.bottom = "50%"
-//       arrowStyle.height = this.size_2_percent(this.props.direction)
-//     } else {
-//       arrowStyle.top = "50%"
-//       arrowStyle.height = this.size_2_percent(this.props.direction)
-//     }
-
-//     // console.log(arrowStyle)
-
-//     return ( 
-//       <div className='flux-box' style={{width: this.props.width}}>
-//         <div className='flux-arrow' style={arrowStyle}>
-          
-//         </div>
-//       </div>
-//       )
-//   }
-
-// }
