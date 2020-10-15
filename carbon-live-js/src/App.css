@@ -345,6 +345,17 @@ hr {
   /* background-color: #d669e4; */
 }
 
+#model-years {
+  width: 17vw;
+}
+
+#model-years .input-group-prepend span {
+  background-color: #5a6375;
+  border-color: #8791a5;
+  font-size: calc(8px + 1vmin);
+  color: lightgrey;
+}
+
 #plot-controls .btn-primary {
   background-color: #5a6375;
   border-color: #8791a5;

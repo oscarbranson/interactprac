@@ -245,9 +245,13 @@ export class Model extends React.Component {
                     <ParamToggle id='plot-param-toggle' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamToggle}/>
                     <div id='model-years'>
                         <InputGroup size='sm'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon1">Model Years</InputGroup.Text>
+                        </InputGroup.Prepend>
+
                             <FormControl
-                            placeholder="Model Years"
-                            aria-label="Model Years"
+                            placeholder="200"
+                            aria-label="200"
                             aria-describedby="basic-addon2"
                             onChange={this.onChangeYears}
                             />
