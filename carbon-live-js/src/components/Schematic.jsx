@@ -128,7 +128,7 @@ export class Schematic extends Component {
         />
         <Box 
           id='lolat'
-          pos = {[40, 50, 60, 30]}
+          pos = {[35, 50, 65, 30]}
           color = {col_lolat}
           value = {val_lolat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
           label = "Low Lat. Surface Ocean"
@@ -136,7 +136,7 @@ export class Schematic extends Component {
         />
         <Box 
           id='hilat'
-          pos = {[0, 40, 40, 40]}
+          pos = {[0, 40, 35, 40]}
           color = {col_hilat}
           value = {val_hilat.toPrecision(this.props.var_info[this.props.param + '_deep']['precision'])}
           label = "High Lat. Surface Ocean"
