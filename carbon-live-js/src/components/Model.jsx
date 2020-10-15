@@ -1,15 +1,18 @@
 import React from 'react';
 import { start_state, step, calc_fluxes, var_info} from './ThreeBox_full';
 import Button from 'react-bootstrap/Button'
+import InputGroup from 'react-bootstrap/InputGroup'
+import FormControl from 'react-bootstrap/FormControl'
 import { Disasters, ModelControls } from './ModelControls'
 import { Schematic } from './Schematic';
 import { ParamToggle } from './ParamButtons';
 import {calc_Ks, GtC2uatm} from './csys'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { thresholdScott } from 'd3';
 
 
-const frameTime = 50;
+const frameTime = 20;
 const npoints = 200;
 
 export class Model extends React.Component {
@@ -22,15 +25,17 @@ export class Model extends React.Component {
             now: start_state,
             history: {},
             fluxes: calc_fluxes(start_state),
+            npoints: 200,
+            year_field: 200,
         };
         // Calculate Ks
         this.state['Ks'] = this.genKs(start_state)
 
         // Set arrays to record model state
         for (let key in this.state.now) {
-            this.state.history[key] = new Array(npoints).fill(this.state.now[key]);
+            this.state.history[key] = new Array(2).fill(this.state.now[key]);
           };
-        
+
         //   Default parameter to show in schematic
         this.state['schematicParam'] = 'pCO2'
         
@@ -73,6 +78,8 @@ export class Model extends React.Component {
         this.handleVolcano = this.handleVolcano.bind(this)
         this.toggleEmissions = this.toggleEmissions.bind(this)
 
+        this.onChangeYears = this.onChangeYears.bind(this)
+        this.handleUpdateYears = this.handleUpdateYears.bind(this)
     }
 
     startSimulation() {
@@ -128,16 +135,20 @@ export class Model extends React.Component {
             now: newState, 
             fluxes: fluxes, 
             history: this.updateHistory(newState), 
-            emissions: this.state.GtC_released += new_GtC});
-    };
+            emissions: this.state.GtC_released += new_GtC,
+        });
+    };  
 
     updateHistory(newState) {
-        let newHisotry = this.state.history;
+        let newHistory = this.state.history;
+        let len = newHistory.DIC_deep.length;
         for (let key in this.state.now) {
-            newHisotry[key].shift();
-            newHisotry[key].push(newState[key])
+            if (len >= this.state.npoints) {
+                newHistory[key] = newHistory[key].slice(len - this.state.npoints + 1);
+            }
+            newHistory[key].push(newState[key])
         }
-        return newHisotry
+        return newHistory
     }
 
     handleParamButtonChange(params) {
@@ -206,6 +217,14 @@ export class Model extends React.Component {
         this.setState({now: newState, Ks: this.genKs(newState)});
     }
 
+    onChangeYears(event) {
+        this.setState({year_field: event.target.value})
+    }
+
+    handleUpdateYears() {
+        this.setState({npoints: this.state.year_field})
+    }
+
     render() {
     return (
         <div id='main-panel'>
@@ -218,12 +237,25 @@ export class Model extends React.Component {
                 </div>
             </div>
             <div className='main-display'>
-                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect} 
+                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={this.state.npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect } 
                            plot_hilat={this.state.plot_hilat} plot_lolat={this.state.plot_lolat} plot_deep={this.state.plot_deep}/>
             </div>
             <div className="bottom-bar">
                 <div id="plot-controls">
                     <ParamToggle id='plot-param-toggle' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamToggle}/>
+                    <div id='model-years'>
+                        <InputGroup size='sm'>
+                            <FormControl
+                            placeholder="Model Years"
+                            aria-label="Model Years"
+                            aria-describedby="basic-addon2"
+                            onChange={this.onChangeYears}
+                            />
+                            <InputGroup.Append>
+                            <Button onClick={this.handleUpdateYears} variant="outline-secondary">Set</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </div>
                     <div id='start-stop'>
                         <Button onClick={this.resetModel} variant="outline-secondary" size="sm" id='model-reset'>Reset</Button>
                         <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button>
