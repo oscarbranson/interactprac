@@ -34,19 +34,19 @@ function dPO4_lolat(state) {
 // Form from Zeebe 2012 (LOSCAR)
 function dCO2_lolat(state, Ks) {
     // console.log(state.pCO2_atmos * Ks.lolat.K0 - state.CO2_lolat)
-    return state.kas * state.SA_lolat * (state.pCO2_atmos - state.fCO2_lolat)  // mol yr-1
+    return state.kas * state.SA_lolat * (state.pCO2_atmos - state.pCO2_lolat)  // mol yr-1
 }
 
 function dCO2_hilat(state, Ks) {
     // console.log(state.pCO2_atmos * Ks.hilat.K0 - state.CO2_hilat)
-    return state.kas * state.SA_hilat * (state.pCO2_atmos - state.fCO2_hilat)  // mol yr-1
+    return state.kas * state.SA_hilat * (state.pCO2_atmos - state.pCO2_hilat)  // mol yr-1
 }
 
 function dpCO2(state, Ks) {
     let q0 = 2.2e15 / 12;  // convert from uatm to moles
     let del_moles_C = (
-        state.kas * state.SA_hilat * (state.fCO2_hilat - state.pCO2_atmos) + 
-        state.kas * state.SA_lolat * (state.fCO2_lolat - state.pCO2_atmos)
+        state.kas * state.SA_hilat * (state.pCO2_hilat - state.pCO2_atmos) + 
+        state.kas * state.SA_lolat * (state.pCO2_lolat - state.pCO2_atmos)
         );
     let del_uatm_CO2 = del_moles_C / q0;
     // console.log(del_uatm_CO2)
@@ -126,6 +126,7 @@ export const paramLabels = {
     DIC: 'DIC',
     TA: 'TA',
     fCO2: 'fCO<sub>2</sub>',
+    pCO2: 'pCO<sub>2</sub>',
     pH: 'pH',
     CO3: '[CO<sub>3</sub><sup>2-</sup>]',
     HCO3: '[HCO<sub>3</sub><sup>-</sup>]',
@@ -190,6 +191,9 @@ export const start_state = {
     'fCO2_lolat': 399,
     'fCO2_hilat': 369,
     'fCO2_deep': 502,
+    'pCO2_lolat': 399,
+    'pCO2_hilat': 369,
+    'pCO2_deep': 502,
     'pH_lolat': 7.99,
     'pH_hilat': 8.23,
     'pH_deep': 7.97,
@@ -228,7 +232,7 @@ function update_csys(state, Ks) {
         Ks: Ks['lolat']
     })
 
-    for (let cvar of ['pH', 'fCO2', 'CO2', 'HCO3', 'CO3', 'c']) {
+    for (let cvar of ['pH', 'fCO2', 'pCO2', 'CO2', 'HCO3', 'CO3', 'c']) {
         state[cvar + '_deep'] = csys_deep[cvar]
         state[cvar + '_lolat'] = csys_lolat[cvar]
         state[cvar + '_hilat'] = csys_hilat[cvar]
@@ -238,7 +242,7 @@ function update_csys(state, Ks) {
 }
 
 function calc_pCO2_atmos(state) {
-    return (state.fCO2_hilat * state.vol_hilat + state.fCO2_lolat * state.vol_lolat) / (state.vol_hilat + state.vol_lolat)
+    return (state.pCO2_hilat * state.vol_hilat + state.pCO2_lolat * state.vol_lolat) / (state.vol_hilat + state.vol_lolat)
 }
 
 export function calc_fluxes(state) {
@@ -278,8 +282,8 @@ export function calc_fluxes(state) {
     fluxes.prod_TA_lolat = fluxes.prod_PO4_lolat * f_TA_lolat
 
     // CO2 exchange (moles yr-1)
-    fluxes.exCO2_lolat = state.kas * state.SA_lolat * (state.pCO2_atmos - state.fCO2_lolat)
-    fluxes.exCO2_hilat = state.kas * state.SA_hilat * (state.pCO2_atmos - state.fCO2_hilat)
+    fluxes.exCO2_lolat = state.kas * state.SA_lolat * (state.pCO2_atmos - state.pCO2_lolat)
+    fluxes.exCO2_hilat = state.kas * state.SA_hilat * (state.pCO2_atmos - state.pCO2_hilat)
 
     return fluxes
 }
@@ -430,6 +434,12 @@ export const var_info = {
         ymax: 450,
         precision: 3
     },
+    'pCO2_deep': {
+        label: 'pCO2',
+        ymin: 350,
+        ymax: 450,
+        precision: 3
+    },
     'CO2_deep': {
         label: '[CO2]',
         ymin: 5,
@@ -460,6 +470,12 @@ export const var_info = {
         ymax: 450,
         precision: 3
     },
+    'pCO2_hilat': {
+        label: 'pCO2',
+        ymin: 350,
+        ymax: 450,
+        precision: 3
+    },
     'CO2_hilat': {
         label: '[CO2]',
         ymin: 5,
@@ -486,6 +502,12 @@ export const var_info = {
     },
     'fCO2_lolat': {
         label: 'fCO2',
+        ymin: 350,
+        ymax: 450,
+        precision: 3
+    },
+    'pCO2_lolat': {
+        label: 'pCO2',
         ymin: 350,
         ymax: 450,
         precision: 3

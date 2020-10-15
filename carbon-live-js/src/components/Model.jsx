@@ -35,7 +35,7 @@ export class Model extends React.Component {
           };
         
         //   Default parameter to show in schematic
-        this.state['schematicParam'] = 'fCO2'
+        this.state['schematicParam'] = 'pCO2'
         
         // Model Params
         this.state['model_global_params'] = ['vmix', 'vthermo'] 
@@ -43,7 +43,7 @@ export class Model extends React.Component {
         this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
-        this.state['ocean_vars'] = ['fCO2', 'DIC', 'TA', 'pH', 'CO3', 'HCO3', 'c', 'PO4'];
+        this.state['ocean_vars'] = ['pCO2', 'DIC', 'TA', 'pH', 'CO3', 'HCO3', 'c', 'PO4'];
         this.state['plot_atmos'] = ['pCO2_atmos',];
         this.state['plot_ocean'] = ['fCO2']
         for (let box of ['_deep', '_hilat', '_lolat']) {
@@ -257,8 +257,8 @@ export class Model extends React.Component {
                     <div id='start-stop'>
                     <Button onClick={this.resetModel} variant="outline-secondary" size="sm" id='model-reset'>Reset</Button>
                     {/* <ButtonGroup> */}
-                        {/* <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button> */}
-                        <ToggleButton type="checkbox" variant="outline-secondary" onChange={this.toggleSimulation} value={1}>{this.state.start_stop_button}</ToggleButton>
+                        <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button>
+                        {/* <ToggleButton type="checkbox" variant="outline-secondary" onChange={this.toggleSimulation} value={1}>{this.state.start_stop_button}</ToggleButton> */}
                     {/* </ButtonGroup> */}
                     </div>
                 </div>

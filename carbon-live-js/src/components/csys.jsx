@@ -1,6 +1,7 @@
 // functions for calculating C chemistry
 
-var BT35 = 415.7e-6 / 35.;
+const BT35 = 415.7e-6 / 35.;  // umol / kg / sal
+const RGasConstant = 83.1451; // ml bar-1 K-1 mol-1, DOEv2
 
 export function moles2uatm(moles) {
     return moles * 12 / 2.13e15
@@ -41,6 +42,13 @@ export function calc_Ks({ Tc, Sal }) {
     let KspC = Math.pow(10, (-171.9065 - 0.077993 * T + 2839.319 / T + 71.595 * Math.log10(T) + (-0.77712 + 0.0028426 * T + 178.34 / T) * sqrtSal - 0.07711 * Sal + 0.0041249 * Sal * sqrtSal))
     let KspA = Math.pow(10, (-171.945 - 0.077993 * T + 2903.293 / T + 71.595 * Math.log10(T) + (-0.068393 + 0.0017276 * T + 88.135 / T) * sqrtSal - 0.10018 * Sal + 0.0059415 * Sal * sqrtSal))
 
+    let Delta = (57.7 - 0.118 * T);
+    let b = -1636.75 + 12.0408 * T - 0.0327957 * T**2 + 3.16528 * 0.00001 * T**3;
+    let P1atm = 1.01325;
+    let RT = RGasConstant * T;
+    let FugFac = Math.exp((b + 2 * Delta) * P1atm / RT);
+    console.log(FugFac)
+
     return {
         K0: K0,
         K1: K1,
@@ -48,7 +56,8 @@ export function calc_Ks({ Tc, Sal }) {
         KB: KB,
         KW: KW,
         KspA: KspA,
-        KspC: KspC
+        KspC: KspC,
+        FugFac: FugFac
     }
 }
 
@@ -139,7 +148,7 @@ export function DIC_from_fCO2({ fCO2, TA, Sal, Ks }) {
     return DIC
 }
 
-export function calc_csys({ DIC, TA, Sal, Ks }) {
+export function calc_csys({ DIC, TA, Sal, Ks}) {
     TA = TA * 1e-6;
     DIC = DIC * 1e-6;
 
@@ -152,6 +161,7 @@ export function calc_csys({ DIC, TA, Sal, Ks }) {
     let HCO3 = 1e6 * DIC / (1 + H / Ks.K1 + Ks.K2 / H);
     let CO3 = 1e6 * DIC / (1 + H / Ks.K2 + H ** 2 / (Ks.K1 * Ks.K2));
     let fCO2 = CO2 / Ks.K0;
+    let pCO2 = fCO2 / Ks.FugFac;
 
     // Saturation measure
     let c = 1e-6 * CO3 / (Ks.KspC / 10.2e-3)
@@ -162,7 +172,8 @@ export function calc_csys({ DIC, TA, Sal, Ks }) {
         CO2: CO2,
         HCO3: HCO3,
         CO3: CO3,
-        c: c
+        c: c,
+        pCO2: pCO2, 
     }
 }
 
