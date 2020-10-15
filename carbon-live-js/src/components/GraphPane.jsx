@@ -1,46 +1,7 @@
 import React from 'react';
-import { SubGraph, Graph } from './Graph'
+import { SubGraph } from './Graph'
 // import { ParamButtons } from './ParamButtons'
 
-export class GraphPane extends React.Component {
-    // constructor(props) {
-    //     super(props)
-    //     console.log(this.props)
-    // }
-
-    // onParamChange(p) {
-    //     console.log(p)
-
-    // }
-
-    render () {
-        let graphs = [];
-        for (let key of this.props.variables) {
-            let info = this.props.var_info[key]
-            graphs.push(
-                <Graph 
-                    data = {this.props.data}
-                    id = {key}
-                    min = {info['ymin']}
-                    max = {info['ymax']}
-                    param = {key}
-                    key = {key}
-                    npoints = {this.props.npoints}
-                    ylabel = {info['label']}
-                    precision = {info['precision']}
-                />
-            )
-        }
-
-        return (
-            <div className='graph-container' style={{width: this.props.width}}>
-                <h3>{this.props.title}</h3> 
-                {/* <ParamButtons params={this.props.variables} onChange={this.onParamChange}/> */}
-                {graphs}
-            </div>
-        )
-    } 
-}
 
 export class SubGraphPane extends React.Component {
     constructor(props) {
@@ -62,19 +23,18 @@ export class SubGraphPane extends React.Component {
 
         let graphs = [];
         let i = 1;
-        let npoints = 0;
         for (let key of this.props.variables) {
             let info = this.props.var_info[key]
-            npoints = this.props.data[key].length;
             graphs.push(
                 <SubGraph 
                     data = {this.props.data}
+                    time={this.props.time}
                     id = {key}
                     min = {info['ymin']}
                     max = {info['ymax']}
                     param = {key}
                     key = {key}
-                    npoints = {npoints}
+                    npoints = {this.props.npoints}
                     label = {info['label']}
                     // height = { this.state.h }
                     // precision = {info['precision']}
@@ -97,7 +57,7 @@ export class SubGraphPane extends React.Component {
                 {/* <ParamButtons params={this.props.variables} onChange={this.onParamChange}/> */}
                 <div className='axis-left'></div>
                 {graphs}
-                <GraphAxis nticks={3} npoints={npoints}/>
+                <GraphAxis nticks={3} npoints={this.props.npoints}/>
             </div>
         )
     } 
