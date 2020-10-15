@@ -47,7 +47,6 @@ export function calc_Ks({ Tc, Sal }) {
     let P1atm = 1.01325;
     let RT = RGasConstant * T;
     let FugFac = Math.exp((b + 2 * Delta) * P1atm / RT);
-    console.log(FugFac)
 
     return {
         K0: K0,
