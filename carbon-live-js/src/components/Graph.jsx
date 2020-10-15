@@ -184,7 +184,7 @@ export class SubGraph extends Component {
         svg_width = this.graph.bb.width;
       
     var height = svg_height - 2 * margin,
-        width = svg_width - axis_margin;
+        width = svg_width - axis_margin - margin;
 
     this.graph.xScale = d3.scaleLinear()
       .domain([0, this.props.npoints])

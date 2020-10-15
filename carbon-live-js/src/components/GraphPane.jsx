@@ -62,8 +62,10 @@ export class SubGraphPane extends React.Component {
 
         let graphs = [];
         let i = 1;
+        let npoints = 0;
         for (let key of this.props.variables) {
             let info = this.props.var_info[key]
+            npoints = this.props.data[key].length;
             graphs.push(
                 <SubGraph 
                     data = {this.props.data}
@@ -72,7 +74,7 @@ export class SubGraphPane extends React.Component {
                     max = {info['ymax']}
                     param = {key}
                     key = {key}
-                    npoints = {this.props.data[key].length}
+                    npoints = {npoints}
                     label = {info['label']}
                     // height = { this.state.h }
                     // precision = {info['precision']}
@@ -93,8 +95,37 @@ export class SubGraphPane extends React.Component {
                 height: this.props.pos[3] + '%',
               }}>
                 {/* <ParamButtons params={this.props.variables} onChange={this.onParamChange}/> */}
+                <div className='axis-left'></div>
                 {graphs}
+                <GraphAxis nticks={3} npoints={npoints}/>
             </div>
         )
     } 
+}
+
+export class GraphAxis extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    
+    render () {
+        let ticks = [];
+        let labels = [];
+        let labelValue = this.props.npoints;
+        let labelGap = (this.props.npoints / (this.props.nticks - 1)).toFixed(0);
+        for (let i = 0; i < this.props.nticks; i++) {
+            ticks.push(<div className='axis-tick'></div>);
+            labels.push(<div className='axis-label'>{labelValue}</div>);
+            labelValue -= labelGap;
+        }
+
+        return <div className='graph-axis'>
+            <div className='axis-ticks'>
+                {ticks}
+            </div>
+            <div className='axis-labels'>
+                {labels}
+            </div>
+        </div>
+    }
 }
