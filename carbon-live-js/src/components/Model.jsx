@@ -280,7 +280,7 @@ export class Model extends React.Component {
                 <div id="plot-controls">
                     <ParamToggle id='plot-param-toggle' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamToggle}/>
                     <div id='time-controls'>
-                        <InputGroup size='sm'>
+                        <InputGroup size='sm' className="control-bit">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon1">Model Years</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -291,19 +291,19 @@ export class Model extends React.Component {
                                 onChange={this.onChangeYears}
                             />
                             <InputGroup.Append>
-                                <Button onClick={this.handleUpdateYears} variant="outline-secondary">Set</Button>
+                                <Button onClick={this.handleUpdateYears} size="sm">Set</Button>
                             </InputGroup.Append>
                         </InputGroup>
-                        <ButtonGroup size='sm' id='speed-controls'>
-                            <Button onClick={this.handleSlowDown} variant="outline-secondary" size="sm" id='time-faster'>{"\u2193"}</Button>
+                        <ButtonGroup size='sm' id='speed-controls' className="control-bit">
+                            <Button onClick={this.handleSlowDown} size="sm">{"\u2193"}</Button>
                             <div id="speed-label">{this.state.yearsPerSecond + " yr/s"}</div>
-                            <Button onClick={this.handleSpeedUp} variant="outline-secondary" size="sm" id="time-slower">{"\u2191"}</Button>
+                            <Button onClick={this.handleSpeedUp} size="sm">{"\u2191"}</Button>
                         </ButtonGroup>
-                    </div>
-                    <div id='start-stop'>
-                    <ButtonGroup size='sm'>
-                        <Button onClick={this.resetModel} variant="outline-secondary" size="sm" id='model-reset'>Reset</Button>
-                        <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button>
+                    {/* </div> */}
+                    {/* <div id='start-stop'> */}
+                    <ButtonGroup size='sm' className="control-bit">
+                        <Button onClick={this.resetModel} size="sm">Reset</Button>
+                        <Button onClick={this.toggleSimulation} size="sm">{this.state.start_stop_button}</Button>
                     </ButtonGroup>
                     </div>
                 </div>
