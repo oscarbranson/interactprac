@@ -1,6 +1,7 @@
 import React from 'react';
 import { start_state, step, calc_fluxes, var_info} from './ThreeBox_full';
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import { Disasters, ModelControls } from './ModelControls'
@@ -27,6 +28,7 @@ export class Model extends React.Component {
             fluxes: calc_fluxes(start_state),
             npoints: 200,
             year_field: 200,
+            frameTime: 20,  // ms
         };
         // Calculate Ks
         this.state['Ks'] = this.genKs(start_state)
@@ -35,6 +37,8 @@ export class Model extends React.Component {
         for (let key in this.state.now) {
             this.state.history[key] = new Array(2).fill(this.state.now[key]);
           };
+        
+        this.state.yearsPerSecond = 1 / this.state.frameTime * 1e3
 
         //   Default parameter to show in schematic
         this.state['schematicParam'] = 'pCO2'
@@ -80,13 +84,16 @@ export class Model extends React.Component {
 
         this.onChangeYears = this.onChangeYears.bind(this)
         this.handleUpdateYears = this.handleUpdateYears.bind(this)
+        
+        this.handleSpeedUp = this.handleSpeedUp.bind(this)
+        this.handleSlowDown = this.handleSlowDown.bind(this)
     }
 
     startSimulation() {
         if (this.interval == null) {
             this.interval = setInterval(() => {
                 this.stepModel()
-            }, frameTime);
+            }, this.state.frameTime);
         }
         this.setState({running: true})
     }
@@ -228,6 +235,32 @@ export class Model extends React.Component {
         this.setState({npoints: this.state.year_field})
     }
 
+    handleSpeedUp() {
+        let newFrameTime = this.state.frameTime / 2;
+        let newYearsPerSecond = 1 / newFrameTime * 1e3;
+        console.log(newFrameTime, newYearsPerSecond)
+        
+        clearInterval(this.interval);
+        this.interval = setInterval(() => {
+            this.stepModel()
+        }, newFrameTime);
+
+        this.setState({frameTime: newFrameTime, yearsPerSecond: newYearsPerSecond});
+    }
+
+    handleSlowDown() {
+        let newFrameTime = this.state.frameTime * 2;
+        let newYearsPerSecond = 1 / newFrameTime * 1e3;
+        console.log(newFrameTime, newYearsPerSecond)
+
+        clearInterval(this.interval);
+        this.interval = setInterval(() => {
+            this.stepModel()
+        }, newFrameTime);
+
+        this.setState({frameTime: newFrameTime, yearsPerSecond: newYearsPerSecond});
+    }
+
     render() {
     return (
         <div id='main-panel'>
@@ -246,27 +279,36 @@ export class Model extends React.Component {
             <div className="bottom-bar">
                 <div id="plot-controls">
                     <ParamToggle id='plot-param-toggle' params={this.state.ocean_vars} defaultValue={this.state.plot_ocean} onChange={this.handleParamToggle}/>
-                    <div id='model-years'>
+                    <div id='time-controls'>
                         <InputGroup size='sm'>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon1">Model Years</InputGroup.Text>
-                        </InputGroup.Prepend>
-
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon1">Model Years</InputGroup.Text>
+                            </InputGroup.Prepend>
                             <FormControl
-                            placeholder="200"
-                            aria-label="200"
-                            aria-describedby="basic-addon2"
-                            onChange={this.onChangeYears}
+                                placeholder="200"
+                                aria-label="200"
+                                aria-describedby="basic-addon2"
+                                onChange={this.onChangeYears}
                             />
                             <InputGroup.Append>
-                            <Button onClick={this.handleUpdateYears} variant="outline-secondary">Set</Button>
+                                <Button onClick={this.handleUpdateYears} variant="outline-secondary">Set</Button>
                             </InputGroup.Append>
                         </InputGroup>
+                        <ButtonGroup size='sm' id='speed-controls'>
+                            <Button onClick={this.handleSlowDown} variant="outline-secondary" size="sm" id='time-faster'>{"\u2193"}</Button>
+                            <div id="speed-label">{this.state.yearsPerSecond + " yr/s"}</div>
+                            <Button onClick={this.handleSpeedUp} variant="outline-secondary" size="sm" id="time-slower">{"\u2191"}</Button>
+                        </ButtonGroup>
                     </div>
                     <div id='start-stop'>
+                    <ButtonGroup size='sm'>
                         <Button onClick={this.resetModel} variant="outline-secondary" size="sm" id='model-reset'>Reset</Button>
                         <Button onClick={this.toggleSimulation} variant="outline-secondary" size="sm" id="model-toggle">{this.state.start_stop_button}</Button>
+                    </ButtonGroup>
                     </div>
+                </div>
+                <div className="bottom-credit">
+                    {"\u00A9"} <a href="mailto:ob266@cam.ac.uk">Oscar Branson</a>, Department of Earth Sciences, University of Cambridge
                 </div>
             </div>
         </div>

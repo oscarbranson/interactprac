@@ -316,6 +316,13 @@ hr {
   box-shadow: unset;
 }
 
+.bottom-credit {
+  min-height: 2vh;
+  /* background-color: red; */
+  font-size: small;
+  color: #8791a5;
+}
+
 /* #model-reset:active {
   background-color: lime;
 } */
@@ -334,6 +341,7 @@ hr {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  align-content: space-between;
   width: 100%;
   height: 4vh;
 }
@@ -345,11 +353,30 @@ hr {
   /* background-color: #d669e4; */
 }
 
-#model-years {
-  width: 17vw;
+#time-controls {
+  width: 35vw;
+  display: flex;
+  justify-content: space-between;
+  height: 4vh;
+  margin: 0 1vw;
 }
 
-#model-years .input-group-prepend span {
+#speed-controls {
+  font-size: calc(2px + 2vmin);
+  align-items: center;
+}
+
+#speed-label {
+  min-width: 4em;
+  text-align: center;
+  font-size: calc(2px + 1vmin);
+}
+
+#time-controls .form-control {
+  max-width: 4em;
+}
+
+#time-controls .input-group-prepend span {
   background-color: #5a6375;
   border-color: #8791a5;
   font-size: calc(8px + 1vmin);
