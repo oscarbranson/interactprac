@@ -83,6 +83,7 @@ export class Model extends React.Component {
         this.toggleEmissions = this.toggleEmissions.bind(this)
 
         this.onChangeYears = this.onChangeYears.bind(this)
+        this.onYearsEnter = this.onYearsEnter.bind(this)
         this.handleUpdateYears = this.handleUpdateYears.bind(this)
         
         this.handleSpeedUp = this.handleSpeedUp.bind(this)
@@ -231,7 +232,14 @@ export class Model extends React.Component {
         this.setState({year_field: event.target.value})
     }
 
+    onYearsEnter(event) {
+        if (event.key === "Enter") {
+            this.setState({npoints: this.state.year_field})
+        }
+    }
+
     handleUpdateYears() {
+        console.log('ping')
         this.setState({npoints: this.state.year_field})
     }
 
@@ -289,6 +297,7 @@ export class Model extends React.Component {
                                 aria-label="200"
                                 aria-describedby="basic-addon2"
                                 onChange={this.onChangeYears}
+                                onKeyPress={this.onYearsEnter}
                             />
                             <InputGroup.Append>
                                 <Button onClick={this.handleUpdateYears} size="sm">Set</Button>
@@ -299,12 +308,10 @@ export class Model extends React.Component {
                             <div id="speed-label">{this.state.yearsPerSecond + " yr/s"}</div>
                             <Button onClick={this.handleSpeedUp} size="sm">{"\u2191"}</Button>
                         </ButtonGroup>
-                    {/* </div> */}
-                    {/* <div id='start-stop'> */}
-                    <ButtonGroup size='sm' className="control-bit">
-                        <Button onClick={this.resetModel} size="sm">Reset</Button>
-                        <Button onClick={this.toggleSimulation} size="sm">{this.state.start_stop_button}</Button>
-                    </ButtonGroup>
+                        <ButtonGroup size='sm' className="control-bit">
+                            <Button onClick={this.resetModel} size="sm">Reset</Button>
+                            <Button onClick={this.toggleSimulation} size="sm">{this.state.start_stop_button}</Button>
+                        </ButtonGroup>
                     </div>
                 </div>
                 <div className="bottom-credit">
