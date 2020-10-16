@@ -1,20 +1,5 @@
 import React, { Component } from 'react'
 import * as d3 from 'd3';
-// import {axisLeft} from 'd3-axis'
-
-function range(start, end) {
-  return Array(end - start + 1).fill().map((_, idx) => start + idx)
-}
-
-function make_data(npoints, data) {
-  let pdata = [];
-  let ix = npoints - data.length + 1;
-  for (let i = 0; i < data.length; i++) {
-    pdata.push([ix, data[i]])
-    ix += 1
-  }
-  return pdata
-}
 
 export class Graph extends Component {
   constructor(props) {

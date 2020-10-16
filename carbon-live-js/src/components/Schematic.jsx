@@ -36,14 +36,14 @@ function parseHSL(h, s, l) {
   return "hsl(" + h + "," + s + "%," + l + "%)"
 }
 
-function neg_color(lightness) {
-  let delta_lightness = 50;
-  if (lightness > 50) {
-    return lightness - delta_lightness
-  } else {
-    return lightness + delta_lightness
-  }
-}
+// function neg_color(lightness) {
+//   let delta_lightness = 50;
+//   if (lightness > 50) {
+//     return lightness - delta_lightness
+//   } else {
+//     return lightness + delta_lightness
+//   }
+// }
 
 export class Schematic extends Component {
 
@@ -300,9 +300,9 @@ class Fluxes extends Component {
 }
 
 class Arrow extends Component {
-  constructor(props) {
-    super(props)
-  }
+  // constructor(props) {
+  //   super(props)
+  // }
 
   size_2_percent(size) {
     return Math.abs(50 * size / this.props.amplitude) + '%'

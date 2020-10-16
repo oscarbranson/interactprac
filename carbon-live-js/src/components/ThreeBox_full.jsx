@@ -1,16 +1,5 @@
 import { calc_csys, calc_Ks, moles2uatm } from './csys';
 
-// Form from Zeebe 2012 (LOSCAR)
-function dCO2_lolat(state, Ks) {
-    // console.log(state.pCO2_atmos * Ks.lolat.K0 - state.CO2_lolat)
-    return state.kas * state.SA_lolat * (state.pCO2_atmos - state.pCO2_lolat)  // mol yr-1
-}
-
-function dCO2_hilat(state, Ks) {
-    // console.log(state.pCO2_atmos * Ks.hilat.K0 - state.CO2_hilat)
-    return state.kas * state.SA_hilat * (state.pCO2_atmos - state.pCO2_hilat)  // mol yr-1
-}
-
 export const paramLabels = {
     PO4: '[PO<sub>4</sub>]',
     c: '\u03A9',
