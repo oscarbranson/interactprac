@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import { ParamDropdown } from './ParamDropdown'
 import { moles2GtC, uatm2GtC } from './csys'
-import { SubGraphPane } from './GraphPane';
 import { var_info, paramLabels } from './ThreeBox_full'
 import { Graph } from './Graph';
 
@@ -9,7 +7,7 @@ const divid = "threebox"
 
 const flux_labels = ['CO<sub>2</sub>', '[PO<sub>4</sub>]', '[DIC]', 'Alkalinity']
 const flux_colors = ["#888e9b", "#d3ca98", "#e98787", "#e7abef"]  // CO2, PO4, DIC, TA
-const plot_bkg = "black"
+// const plot_bkg = "black"
 
 export class Box extends Component {
   render() {
@@ -144,15 +142,6 @@ export class Schematic extends Component {
           GtC = {GtC_hilat}
         />
         {/* Graphs */}
-        {/* <SubGraphPane
-          pos = {[38, 84, 22, 12]}
-          data={this.props.data}
-          npoints={this.props.npoints}
-          variables={['pCO2_atmos', 'pCO2_atmos_noExch']}
-          var_info={var_info}
-          id = 'g_atmos'
-        /> */}
-
         <Graph
           pos = {[38, 84, 22, 12]}
           data={this.props.data}
@@ -162,15 +151,6 @@ export class Schematic extends Component {
           label="pCO<sub>2</sub>"
           id = 'g_atmos_noex'
         />
-        
-        {/* <SubGraphPane
-          pos = {[2, 54, 22, 12]}
-          data={this.props.data}
-          npoints={this.props.npoints}
-          variables={this.props.plot_hilat}
-          var_info={var_info}
-          id = 'g_hilat'
-        /> */}
 
         <Graph
           pos = {[2, 54, 22, 12]}
@@ -182,14 +162,6 @@ export class Schematic extends Component {
           id = 'g_hilat'
         />
 
-        {/* <SubGraphPane
-          pos = {[76, 58, 22, 12]}
-          data={this.props.data}
-          npoints={this.props.npoints}
-          variables={this.props.plot_lolat}
-          var_info={var_info}
-          id = 'g_lolat'
-        /> */}
         <Graph
           pos = {[76, 58, 22, 12]}
           data={this.props.data}
@@ -200,14 +172,6 @@ export class Schematic extends Component {
           id = 'g_lolat'
         />
 
-        {/* <SubGraphPane
-          pos = {[38, 10, 22, 12]}
-          data={this.props.data}
-          npoints={this.props.npoints}
-          variables={this.props.plot_deep}
-          var_info={var_info}
-          id = 'g_deep'
-        /> */}
         <Graph
           pos = {[38, 10, 22, 12]}
           data={this.props.data}
@@ -275,11 +239,7 @@ export class Schematic extends Component {
           colors={flux_colors.slice(1)}
           label="&tau;"
           />
-        {/* Parameter Selection */}
-        {/* <ParamDropdown className='dropdown'
-                        params={this.props.ocean_vars}
-                        param={this.props.param} 
-                        handleSelect={this.props.handleDropdownSelect}/> */}
+
         <div className='legend box'>
           <h3>Net Fluxes</h3>
           {legend}
