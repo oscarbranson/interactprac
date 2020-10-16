@@ -105,9 +105,9 @@ export class Disasters extends React.Component {
     handleEmissions() {
         this.props.handleEmissions()
         if (this.state.emitLabel === 'Burn!') {
-            this.state.emitLabel = 'Stop.';
+            this.setState({emitLabel: 'Stop.'});
         } else {
-            this.state.emitLabel = 'Burn!';
+            this.setState({emitLabel: 'Burn!'});
         }
     }
 

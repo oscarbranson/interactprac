@@ -10,11 +10,10 @@ import { ParamToggle } from './ParamButtons';
 import {calc_Ks, GtC2uatm, uatm2GtC} from './csys'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { thresholdScott } from 'd3';
 
 const GtC_atmos_0 = uatm2GtC(372.8);
-const frameTime = 20;
-const npoints = 200;
+// const frameTime = 20;
+// const npoints = 200;
 
 export class Model extends React.Component {
     constructor(props) {
@@ -129,10 +128,12 @@ export class Model extends React.Component {
         let newState = this.state.now;
         let GtC_release = 2;
         let new_GtC = 0;
-    
+        let totalEmissions = this.state.GtC_released;
+
         if (this.emitting) {
             newState.pCO2_atmos += GtC2uatm(GtC_release)
             new_GtC = GtC_release;
+            totalEmissions += new_GtC;
         }
 
         let fluxes = calc_fluxes(newState)
@@ -145,7 +146,7 @@ export class Model extends React.Component {
             now: newState, 
             fluxes: fluxes, 
             history: this.updateHistory(newState), 
-            emissions: this.state.GtC_released += new_GtC,
+            GtC_released: totalEmissions,
         });
     };  
 
@@ -239,14 +240,12 @@ export class Model extends React.Component {
     }
 
     handleUpdateYears() {
-        console.log('ping')
         this.setState({npoints: this.state.year_field})
     }
 
     handleSpeedUp() {
         let newFrameTime = this.state.frameTime / 2;
         let newYearsPerSecond = 1 / newFrameTime * 1e3;
-        console.log(newFrameTime, newYearsPerSecond)
         
         clearInterval(this.interval);
         this.interval = setInterval(() => {
@@ -259,7 +258,6 @@ export class Model extends React.Component {
     handleSlowDown() {
         let newFrameTime = this.state.frameTime * 2;
         let newYearsPerSecond = 1 / newFrameTime * 1e3;
-        console.log(newFrameTime, newYearsPerSecond)
 
         clearInterval(this.interval);
         this.interval = setInterval(() => {
@@ -305,7 +303,7 @@ export class Model extends React.Component {
                         </InputGroup>
                         <ButtonGroup size='sm' id='speed-controls' className="control-bit">
                             <Button onClick={this.handleSlowDown} size="sm">{"\u2193"}</Button>
-                            <div id="speed-label">{this.state.yearsPerSecond + " yr/s"}</div>
+                            <div id="speed-label" dangerouslySetInnerHTML={{__html: "Speed<br>" + this.state.yearsPerSecond + " yr/s"}}></div>
                             <Button onClick={this.handleSpeedUp} size="sm">{"\u2191"}</Button>
                         </ButtonGroup>
                         <ButtonGroup size='sm' className="control-bit">
