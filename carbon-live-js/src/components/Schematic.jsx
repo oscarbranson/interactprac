@@ -3,6 +3,7 @@ import { ParamDropdown } from './ParamDropdown'
 import { moles2GtC, uatm2GtC } from './csys'
 import { SubGraphPane } from './GraphPane';
 import { var_info, paramLabels } from './ThreeBox_full'
+import { Graph } from './Graph';
 
 const divid = "threebox"
 
@@ -143,48 +144,77 @@ export class Schematic extends Component {
           GtC = {GtC_hilat}
         />
         {/* Graphs */}
-        <SubGraphPane
+        {/* <SubGraphPane
           pos = {[38, 84, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
-          variables={['pCO2_atmos']}
+          variables={['pCO2_atmos', 'pCO2_atmos_noExch']}
           var_info={var_info}
           id = 'g_atmos'
-        />
+        /> */}
 
-        <SubGraphPane
-          pos = {[68, 84, 22, 12]}
+        <Graph
+          pos = {[38, 84, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
-          variables={['pCO2_atmos_noExch']}
+          variables={['pCO2_atmos_noExch', 'pCO2_atmos']}
           var_info={var_info}
+          label="pCO<sub>2</sub>"
           id = 'g_atmos_noex'
         />
-
-        <SubGraphPane
+        
+        {/* <SubGraphPane
           pos = {[2, 54, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
           variables={this.props.plot_hilat}
           var_info={var_info}
           id = 'g_hilat'
+        /> */}
+
+        <Graph
+          pos = {[2, 54, 22, 12]}
+          data={this.props.data}
+          npoints={this.props.npoints}
+          variables={[this.props.plot_hilat]}
+          var_info={var_info}
+          label={paramLabels[this.props.param]}
+          id = 'g_hilat'
         />
 
-        <SubGraphPane
+        {/* <SubGraphPane
           pos = {[76, 58, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
           variables={this.props.plot_lolat}
           var_info={var_info}
           id = 'g_lolat'
+        /> */}
+        <Graph
+          pos = {[76, 58, 22, 12]}
+          data={this.props.data}
+          npoints={this.props.npoints}
+          variables={[this.props.plot_lolat]}
+          var_info={var_info}
+          label={paramLabels[this.props.param]}
+          id = 'g_lolat'
         />
 
-        <SubGraphPane
+        {/* <SubGraphPane
           pos = {[38, 10, 22, 12]}
           data={this.props.data}
           npoints={this.props.npoints}
           variables={this.props.plot_deep}
           var_info={var_info}
+          id = 'g_deep'
+        /> */}
+        <Graph
+          pos = {[38, 10, 22, 12]}
+          data={this.props.data}
+          npoints={this.props.npoints}
+          variables={[this.props.plot_deep]}
+          var_info={var_info}
+          label={paramLabels[this.props.param]}
           id = 'g_deep'
         />
 

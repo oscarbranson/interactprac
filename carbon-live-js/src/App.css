@@ -521,7 +521,7 @@ hr {
 }
 
 .subgraph {
-  height: 75%;
+  height: 100%;
   width: 100%;
   color: #282c34;
   position: relative;
@@ -549,17 +549,22 @@ svg path {
   stroke-width: 2px;
 }
 
+#pCO2_atmos_noExch {
+  stroke: red;
+}
+
 .axis path {
   fill: none;
-  stroke: none;
+  stroke: #282c34;
+  stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 
-.axis line {
+</* .axis line {
   fill: none;
   stroke: #282c34;
   shape-rendering: crispEdges;
-}
+} */
 
 .ylabel {
   fill: #282c34;
