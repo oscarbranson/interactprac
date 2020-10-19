@@ -94,13 +94,23 @@ export class Disasters extends React.Component {
             emitLabel: 'Burn!'
         }
     
-        this.handleVolcano = this.handleVolcano.bind(this)
+        this.handleStHelens = this.handleStHelens.bind(this)
+        this.handlePinatubo = this.handlePinatubo.bind(this)
+        // this.handleTambora = this.handleTambora.bind(this)
         this.handleEmissions = this.handleEmissions.bind(this)
     }
 
-    handleVolcano() {
-        this.props.handleVolcano(this.state.GtC_pinutubo)
+    handleStHelens() {
+        this.props.handleVolcano(0.01 * 0.272)
     }
+
+    handlePinatubo() {
+        this.props.handleVolcano(0.05 * 0.272)
+    }
+
+    // handleTambora() {
+    //     this.props.handleVolcano(0.05 * 0.272)
+    // }
 
     handleEmissions() {
         this.props.handleEmissions()
@@ -124,10 +134,12 @@ export class Disasters extends React.Component {
                 </div> */}
             </div>
             <div className="control-set">
-                <h3>Volcano</h3>
+                <h3>Volcanos</h3>
                 {/* <VerticalSlider/> */}
                 {/* <Button size="sm">St. Helens</Button> */}
-                <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
+                <Button onClick={this.handleStHelens} size="sm">St. Helens</Button>
+                <Button onClick={this.handlePinatubo} size="sm">Pinatubo</Button>
+                {/* <Button onClick={this.handleVolcano} size="sm">Tambora</Button> */}
             </div>
             </div>
         </div>
