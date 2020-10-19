@@ -149,7 +149,7 @@ export class RadiativeForcing extends React.Component {
     render () {
         return (
         <div className="control-section forcing" style={{zIndex: 5}}>
-            <h2>Radiative Forcing </h2>
+            <h2>Climate: Radiative Forcing </h2>
             <div className="model-controls">
             <div className='control-set table'>
                 {/* titles */}

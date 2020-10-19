@@ -135,7 +135,7 @@ hr {
 
 
 .control-section h2 {
-  font-size: calc(9px + 1vmin);
+  font-size: calc(8px + 1vmin);
   text-align: left;
   margin: 0.2vh 0px 0 0.3vw;
   min-height: 2vh;
@@ -152,7 +152,7 @@ hr {
   border-radius: 5px;
 }
 .control-set h3 {
-  font-size: calc(8px + 1vmin);
+  font-size: calc(7px + 0.9vmin);
   text-align: center;
   margin-bottom: 0.5vh;
   min-height: 2vh;
@@ -161,7 +161,7 @@ hr {
 .control-value {
   display: inline-block;
   text-align: center;
-  font-size: calc(6px + 1vmin);
+  font-size: calc(6px + 0.9vmin);
   min-width: 1vh;
 }
 
@@ -184,12 +184,12 @@ hr {
 /* Table */
 .table {
   display: flex;
-  /* flex-direction: row; */
+  align-items: baseline;
   flex-flow: row wrap;
   width: 100%;
-  max-width: 17vw;
+  max-width: calc(200px + 5vw);
   color: lightgray;
-  font-size: calc(7px + 1vmin);
+  font-size: calc(7px + 0.9vmin);
 }
 
 .table.cell {
@@ -212,7 +212,7 @@ hr {
 .table.cell.unit {
   font-style: italic;
   font-size: calc(6px + 0.6vmin);
-  width: 15%
+  width: 18%
 }
 
 
