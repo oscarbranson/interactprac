@@ -90,7 +90,7 @@ export class Graph extends Component {
     this.graph.xAxis = d3.axisBottom(this.graph.xScale).ticks(2)
     this.graph.svg.append('g')
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + 65 + ")")
+      .attr("transform", "translate(0," + (100 - axis_bottom) + ")")
       .call(this.graph.xAxis)
 
     this.graph.lines = []
