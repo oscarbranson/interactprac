@@ -131,6 +131,7 @@ hr {
   background-color: #9c412b;
   border-color: #8791a5;
   box-shadow: unset;
+  font-size: calc(7px + 0.9vmin);
 }
 
 
@@ -145,16 +146,19 @@ hr {
   background-color: #282c34;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  /* align-items: stretch; */
   justify-content: space-between;
   margin: 0.15vw;
-  min-width: 6vw;
+  min-width: 7vmin;
+  max-width: 12vmin;
   border-radius: 5px;
 }
 .control-set h3 {
   font-size: calc(7px + 0.9vmin);
   text-align: center;
   margin-bottom: 0.5vh;
+  margin-left: 0.2vmin;
+  margin-right: 0.2vmin;
   min-height: 2vh;
 }
 
@@ -167,7 +171,7 @@ hr {
 
 .rangeslider-vertical {
   height: 6vh;
-  margin: 0.5vh auto;
+  margin: 0.6vh auto;
 }
 .rangeslider-vertical .rangeslider__fill {
   background-color: #5a6375;
