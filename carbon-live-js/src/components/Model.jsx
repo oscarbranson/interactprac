@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
-import { Disasters, ModelControls } from './ModelControls'
+import { Disasters, ModelControls, RadiativeForcing } from './ModelControls'
 import { Schematic } from './Schematic';
 import { ParamToggle } from './ParamButtons';
 import {calc_Ks, GtC2uatm, uatm2GtC} from './csys'
@@ -276,6 +276,7 @@ export class Model extends React.Component {
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
+                    <RadiativeForcing pCO2_atmos={this.state.now.pCO2_atmos} pCO2_atmos_noExch={this.state.now.pCO2_atmos_noExch}/>
                 </div>
             </div>
             <div className='main-display'>

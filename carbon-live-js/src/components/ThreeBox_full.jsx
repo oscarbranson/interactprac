@@ -65,8 +65,8 @@ export var start_state = {
     'TA_lolat': 2253.4,  // 2244,  // 2315,  // total_TA,
     'TA_hilat': 2344.1,  //2341,  // (2257 + 2291) / 2,  // total_TA,
     'TA_deep': 2381.4,  // total_TA,
-    'pCO2_atmos': 372.8,
-    'pCO2_atmos_noExch': 372.8
+    'pCO2_atmos': 372.75,
+    'pCO2_atmos_noExch': 372.75
 };
 
 function update_csys(state, Ks) {

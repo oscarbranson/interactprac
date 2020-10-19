@@ -173,6 +173,47 @@ hr {
   background-color: #5a6375;
 }
 
+.forcing {
+  background-color: #77632a;
+}
+
+.forcing .control-set {
+  background-color: #8f7734;
+}
+
+/* Table */
+.table {
+  display: flex;
+  /* flex-direction: row; */
+  flex-flow: row wrap;
+  width: 100%;
+  max-width: 17vw;
+  color: lightgray;
+  font-size: calc(7px + 1vmin);
+}
+
+.table.cell {
+  width: 24%;
+  margin: 0 0.1vw
+}
+
+.table.cell.head {
+  font-weight: bold;
+  width: 24%;
+  margin: 0 0.1vw
+}
+
+.table.cell.title {
+  font-weight: bold;
+  margin-left: 0.2vw;
+  width: 20%
+}
+
+.table.cell.unit {
+  font-style: italic;
+  font-size: calc(6px + 0.6vmin);
+  width: 15%
+}
 
 
 /* Main display window */
@@ -391,12 +432,19 @@ hr {
 
 .control-bit {
   margin-left: 1vw;
-  background-color: #5a6375;
   border-color: #8791a5;
   font-size: calc(8px + 1vmin);
   color: lightgrey;
   border-radius: 3px;
   /* background-color: #5a6375; */
+}
+
+.control-bit input {
+  height: 100%;
+}
+
+.control-bit.input-group-sm >.form-control:not(:last-child) {
+  height: unset;
 }
 
 #speed-controls {
@@ -405,6 +453,7 @@ hr {
 }
 
 #speed-label {
+  background-color: #5a6375;
   min-width: 4em;
   text-align: center;
   font-size: calc(2px + 1vmin);

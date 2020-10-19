@@ -135,6 +135,60 @@ export class Disasters extends React.Component {
     }
 }
 
+const climate_sensitivity = 2.5;  // degrees C per doubling CO2
+
+function calc_deltaF(pCO2) {
+    return 5.35 * Math.log(pCO2 / start_state.pCO2_atmos)
+}
+
+function calc_deltaT(pCO2) {
+    return climate_sensitivity * pCO2 / start_state.pCO2_atmos - climate_sensitivity
+}
+
+export class RadiativeForcing extends React.Component {
+    render () {
+        return (
+        <div className="control-section forcing" style={{zIndex: 5}}>
+            <h2>Radiative Forcing </h2>
+            <div className="model-controls">
+            <div className='control-set table'>
+                {/* titles */}
+                <div className="table cell title"></div>
+                <div className="table cell head">No Ocean</div>
+                <div className="table cell head">With Ocean</div>
+                <div className="table cell title"></div>
+                {/* Row 1 - pCO2 */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "pCO<sub>2</sub>"}}>
+                </div>
+                <div className="table cell"> {this.props.pCO2_atmos_noExch.toFixed(1)}</div>
+                <div className="table cell"> {this.props.pCO2_atmos.toFixed(1)}</div>
+                <div className="table cell unit">ppm</div>
+                {/* Row 2 - Delta F */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "\u0394F"}}>
+                </div>
+                <div className="table cell"> {calc_deltaF(this.props.pCO2_atmos_noExch).toFixed(1)}</div>
+                <div className="table cell"> {calc_deltaF(this.props.pCO2_atmos).toFixed(1)}</div>
+                <div className="table cell unit" dangerouslySetInnerHTML={{__html: "W m<sup>-2</sup>"}}></div>
+                {/* Row 3 - Delta T */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "\u0394T"}}>
+                </div>
+                <div className="table cell"> {calc_deltaT(this.props.pCO2_atmos_noExch).toFixed(1)}</div>
+                <div className="table cell"> {calc_deltaT(this.props.pCO2_atmos).toFixed(1)}</div>
+                <div className="table cell unit" dangerouslySetInnerHTML={{__html: "\u2103"}}></div>
+            </div>
+            </div>
+        </div>
+        )
+    }
+
+}
+
 
 export class ModelControls extends React.Component {
     render () {
