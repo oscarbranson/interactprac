@@ -8,6 +8,7 @@ export const paramLabels = {
     fCO2: 'fCO<sub>2</sub>',
     pCO2: 'pCO<sub>2</sub>',
     pH: 'pH',
+    CO2: '[H<sub>2</sub>CO<sub>3</sub><sup>*</sup>]',
     CO3: '[CO<sub>3</sub><sup>2-</sup>]',
     HCO3: '[HCO<sub>3</sub><sup>-</sup>]',
 }
@@ -23,15 +24,15 @@ const depth_lolat = 100;  // m
 const vol_lolat = SA_ocean * fSA_lolat * depth_lolat;  // m3
 
 // const Sv_2_m3yr = 1e6 * (60 * 60 * 24 * 365);
-// const vthermo = 20;  // Sv
+// const vcirc = 20;  // Sv
 // const vmix = 10;  // Sv
 
 export var start_state = {
     'kas': 0.02,  // air-sea gas exchange mol (uatm m2 yr-1)-1
     // 'vmix': 1.2e15,
     'vmix': 1.89e15,  // m3 yr-1
-    // 'vthermo': 6.3072e14,
-    'vthermo': 6.3072e14,  // m3 yr-1
+    // 'vcirc': 6.3072e14,
+    'vcirc': 6.3072e14,  // m3 yr-1
     'tau_hilat': 50,  // yr
     'tau_lolat': 1,  // yr
     'percent_CaCO3_hilat': 10,
@@ -121,16 +122,16 @@ export function calc_fluxes(state) {
     fluxes.vmix_TA_lolat = state.vmix * (state.TA_lolat - state.TA_deep);
     // fluxes.vmix_TA_lolat = 0;
 
-    // vthermo
-    fluxes.vthermo_PO4_deep = state.vthermo * (state.PO4_hilat - state.PO4_deep);
-    fluxes.vthermo_PO4_lolat = state.vthermo * (state.PO4_deep - state.PO4_lolat);
-    fluxes.vthermo_PO4_hilat = state.vthermo * (state.PO4_lolat - state.PO4_hilat);
-    fluxes.vthermo_DIC_deep = state.vthermo * (state.DIC_hilat - state.DIC_deep);
-    fluxes.vthermo_DIC_lolat = state.vthermo * (state.DIC_deep - state.DIC_lolat);
-    fluxes.vthermo_DIC_hilat = state.vthermo * (state.DIC_lolat - state.DIC_hilat);
-    fluxes.vthermo_TA_deep = state.vthermo * (state.TA_hilat - state.TA_deep);
-    fluxes.vthermo_TA_lolat = state.vthermo * (state.TA_deep - state.TA_lolat);
-    fluxes.vthermo_TA_hilat = state.vthermo * (state.TA_lolat - state.TA_hilat);
+    // vcirc
+    fluxes.vcirc_PO4_deep = state.vcirc * (state.PO4_hilat - state.PO4_deep);
+    fluxes.vcirc_PO4_lolat = state.vcirc * (state.PO4_deep - state.PO4_lolat);
+    fluxes.vcirc_PO4_hilat = state.vcirc * (state.PO4_lolat - state.PO4_hilat);
+    fluxes.vcirc_DIC_deep = state.vcirc * (state.DIC_hilat - state.DIC_deep);
+    fluxes.vcirc_DIC_lolat = state.vcirc * (state.DIC_deep - state.DIC_lolat);
+    fluxes.vcirc_DIC_hilat = state.vcirc * (state.DIC_lolat - state.DIC_hilat);
+    fluxes.vcirc_TA_deep = state.vcirc * (state.TA_hilat - state.TA_deep);
+    fluxes.vcirc_TA_lolat = state.vcirc * (state.TA_deep - state.TA_lolat);
+    fluxes.vcirc_TA_hilat = state.vcirc * (state.TA_lolat - state.TA_hilat);
 
     // productivity
     fluxes.prod_PO4_hilat = (state.PO4_hilat * state.vol_hilat / state.tau_hilat);
@@ -156,17 +157,17 @@ export function step(state, fluxes, Ks) {
     let newState = Object.assign({}, state);
     // let newState = state;
 
-    newState.PO4_deep += (fluxes.vmix_PO4_hilat + fluxes.vmix_PO4_lolat + fluxes.vthermo_PO4_deep + fluxes.prod_PO4_hilat + fluxes.prod_PO4_lolat) / state.vol_deep
-    newState.PO4_hilat += (- fluxes.vmix_PO4_hilat + fluxes.vthermo_PO4_hilat - fluxes.prod_PO4_hilat) / state.vol_hilat
-    newState.PO4_lolat += (- fluxes.vmix_PO4_lolat + fluxes.vthermo_PO4_lolat - fluxes.prod_PO4_lolat) / state.vol_lolat
+    newState.PO4_deep += (fluxes.vmix_PO4_hilat + fluxes.vmix_PO4_lolat + fluxes.vcirc_PO4_deep + fluxes.prod_PO4_hilat + fluxes.prod_PO4_lolat) / state.vol_deep
+    newState.PO4_hilat += (- fluxes.vmix_PO4_hilat + fluxes.vcirc_PO4_hilat - fluxes.prod_PO4_hilat) / state.vol_hilat
+    newState.PO4_lolat += (- fluxes.vmix_PO4_lolat + fluxes.vcirc_PO4_lolat - fluxes.prod_PO4_lolat) / state.vol_lolat
 
-    newState.DIC_deep += (fluxes.vmix_DIC_hilat + fluxes.vmix_DIC_lolat + fluxes.vthermo_DIC_deep + fluxes.prod_DIC_hilat + fluxes.prod_DIC_lolat) / state.vol_deep
-    newState.DIC_hilat += (- fluxes.vmix_DIC_hilat + fluxes.vthermo_DIC_hilat - fluxes.prod_DIC_hilat + 1e3 * fluxes.exCO2_hilat) / state.vol_hilat
-    newState.DIC_lolat += (- fluxes.vmix_DIC_lolat + fluxes.vthermo_DIC_lolat - fluxes.prod_DIC_lolat + 1e3 * fluxes.exCO2_lolat) / state.vol_lolat
+    newState.DIC_deep += (fluxes.vmix_DIC_hilat + fluxes.vmix_DIC_lolat + fluxes.vcirc_DIC_deep + fluxes.prod_DIC_hilat + fluxes.prod_DIC_lolat) / state.vol_deep
+    newState.DIC_hilat += (- fluxes.vmix_DIC_hilat + fluxes.vcirc_DIC_hilat - fluxes.prod_DIC_hilat + 1e3 * fluxes.exCO2_hilat) / state.vol_hilat
+    newState.DIC_lolat += (- fluxes.vmix_DIC_lolat + fluxes.vcirc_DIC_lolat - fluxes.prod_DIC_lolat + 1e3 * fluxes.exCO2_lolat) / state.vol_lolat
 
-    newState.TA_deep += (fluxes.vmix_TA_hilat + fluxes.vmix_TA_lolat + fluxes.vthermo_TA_deep + fluxes.prod_TA_hilat + fluxes.prod_TA_lolat) / state.vol_deep
-    newState.TA_hilat += (- fluxes.vmix_TA_hilat + fluxes.vthermo_TA_hilat - fluxes.prod_TA_hilat) / state.vol_hilat
-    newState.TA_lolat += (- fluxes.vmix_TA_lolat + fluxes.vthermo_TA_lolat - fluxes.prod_TA_lolat) / state.vol_lolat
+    newState.TA_deep += (fluxes.vmix_TA_hilat + fluxes.vmix_TA_lolat + fluxes.vcirc_TA_deep + fluxes.prod_TA_hilat + fluxes.prod_TA_lolat) / state.vol_deep
+    newState.TA_hilat += (- fluxes.vmix_TA_hilat + fluxes.vcirc_TA_hilat - fluxes.prod_TA_hilat) / state.vol_hilat
+    newState.TA_lolat += (- fluxes.vmix_TA_lolat + fluxes.vcirc_TA_lolat - fluxes.prod_TA_lolat) / state.vol_lolat
 
     newState.pCO2_atmos += moles2uatm(- fluxes.exCO2_hilat - fluxes.exCO2_lolat)
 
@@ -183,7 +184,7 @@ export const var_info = {
         ymax: null,
         precision: null
     },
-    'vthermo': {
+    'vcirc': {
         label: 'Thermohaline Mixing Rate (m3 / yr)',
         ymin: null,
         ymax: null,

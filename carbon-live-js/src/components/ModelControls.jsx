@@ -12,7 +12,7 @@ function fmt_pre(value, precision) {
 }
 
 const paramFormats = {
-    vthermo: [fmt_sci, 2, start_state.vthermo * 0.5, start_state.vthermo * 2],
+    vcirc: [fmt_sci, 2, start_state.vcirc * 0.5, start_state.vcirc * 2],
     vmix: [fmt_sci, 2, start_state.vmix * 0.5, start_state.vmix * 2],
     tau_hilat: [fmt_pre, 2, 1, 80],
     tau_lolat: [fmt_pre, 2, 1, 80],
@@ -23,7 +23,7 @@ const paramFormats = {
 }
 
 const sliderLabels = {
-    vthermo: {[start_state.vthermo]: '', [start_state.vthermo * 2]: 'x2', [start_state.vthermo / 2]: '/2'},
+    vcirc: {[start_state.vcirc]: '', [start_state.vcirc * 2]: 'x2', [start_state.vcirc / 2]: '/2'},
     vmix: {[start_state.vmix]: '', [start_state.vmix * 2]: 'x2', [start_state.vmix / 2]: '/2'},
     tau_hilat: {[start_state.tau_hilat]: ''},
     tau_lolat: {[start_state.tau_lolat]: ''},
@@ -39,7 +39,7 @@ const slidersteps = {
 }
 
 const labels = {
-    vthermo: 'V<sub>thermo</sub>',
+    vcirc: 'V<sub>circ</sub>',
     vmix: 'V<sub>mix</sub>',
     tau_hilat: '&tau;',
     tau_lolat: '&tau;',
