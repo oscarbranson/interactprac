@@ -11,15 +11,18 @@ function fmt_pre(value, precision) {
     return value.toPrecision(precision)
 }
 
+function fmt_fix(value, decimals) {
+    return value.toFixed(decimals)
+}
 const paramFormats = {
-    vcirc: [fmt_sci, 2, start_state.vcirc * 0.5, start_state.vcirc * 2],
-    vmix: [fmt_sci, 2, start_state.vmix * 0.5, start_state.vmix * 2],
-    tau_hilat: [fmt_pre, 2, 1, 80],
-    tau_lolat: [fmt_pre, 2, 1, 80],
+    vcirc: [fmt_sci, 1, start_state.vcirc * 0.5, start_state.vcirc * 2],
+    vmix: [fmt_sci, 1, start_state.vmix * 0.5, start_state.vmix * 2],
+    tau_hilat: [fmt_pre, 2, 30, 100],
+    tau_lolat: [fmt_pre, 2, 1, 10, 0.1],
     percent_CaCO3_hilat: [fmt_pre, 2, 0, 50],
     percent_CaCO3_lolat: [fmt_pre, 2, 0, 50],
-    temp_hilat: [fmt_pre, 2, 0, 10],
-    temp_lolat: [fmt_pre, 2, 20, 30]
+    temp_hilat: [fmt_fix, 1, 0, 10, 0.1],
+    temp_lolat: [fmt_fix, 1, 20, 30, 0.1]
 }
 
 const sliderLabels = {
@@ -72,11 +75,12 @@ export class ControlSet extends React.Component {
     render () {
         let min = paramFormats[this.props.param][2];
         let max = paramFormats[this.props.param][3];
+        let stepsize = paramFormats[this.props.param][4];
 
         return (
             <div className="control-set">
                 <h3 dangerouslySetInnerHTML={{__html: labels[this.props.param]}}></h3>
-                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]} step={slidersteps[this.props.param]}/>
+                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]} step={stepsize}/>
                 <div className="control-value">
                 {paramFormats[this.props.param][0](this.props.value, paramFormats[this.props.param][1])}
                 </div>
