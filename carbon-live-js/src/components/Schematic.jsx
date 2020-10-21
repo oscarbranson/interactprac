@@ -193,14 +193,15 @@ export class Schematic extends Component {
         <Fluxes 
           fluxes={[this.props.fluxes.vcirc_DIC_deep / this.props.data.vol_ocean[ind]]}
           sizes={[0.1]}
-          centre={[32, 60]}
+          centre={[35, 55]}
           colors={[flux_colors[1]]}
           label="V<sub>circ</sub>"
+          id='hideep'
           />
         <Fluxes 
           fluxes={[this.props.fluxes.vcirc_DIC_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.1]}
-          centre={[43, 50]}
+          centre={[39, 50]}
           colors={[flux_colors[1]]}
           label="V<sub>circ</sub>"
           />
@@ -223,7 +224,7 @@ export class Schematic extends Component {
         <Fluxes 
           fluxes={[-this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind]]}
           sizes={[0.1]}
-          centre={[56, 50]}
+          centre={[54, 50]}
           colors={[flux_colors[2]]}
           label="V<sub>mix</sub>"
           />
@@ -259,7 +260,7 @@ class Fluxes extends Component {
     super(props)
 
     this.state = {
-      arrowWidthPercent: 1,
+      arrowWidthPercent: 3,
       arrowHeightPercent: 10,
     }
 
@@ -313,8 +314,8 @@ class Arrow extends Component {
 
   render() {
     let arrowStyle = {
-      width: "95%",
-      left: "0%",
+      width: "33%",
+      // left: "0%",
       backgroundColor: this.props.color
     }
     if (this.props.direction >= 0) {
