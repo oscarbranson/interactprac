@@ -307,12 +307,14 @@ hr {
 }
 
 #gas > .flux-label{
-  width: 260%;
-  left: -80%;
+  width: 200%;
+  left: -50%;
 }
 
 .flux-box {
   display: block;
+  display: flex;
+  justify-content: center;
   flex-direction: row;
   position: relative;
   height: 100%;
@@ -324,11 +326,15 @@ hr {
   display: block;
   position: absolute;
   border-radius: 3px;
-  border: solid 1pt #282c34;
+  border: solid 1pt lightgrey;
 }
 
 #lohi.flux-pane {
   transform: rotate(90deg);
+}
+
+#hideep.flux-pane {
+  transform: rotate(270deg);
 }
 
 .legend.box {
