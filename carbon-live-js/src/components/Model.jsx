@@ -48,7 +48,7 @@ export class Model extends React.Component {
         this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
-        this.state['ocean_vars'] = ['pCO2', 'DIC', 'pH', 'c', 'CO3', 'HCO3', 'CO2'];
+        this.state['ocean_vars'] = ['pCO2', 'DIC', 'pH', 'CO3', 'HCO3', 'CO2'];
         this.state['plot_atmos'] = ['pCO2_atmos',];
         this.state['plot_ocean'] = ['pCO2']
         for (let box of ['_deep', '_hilat', '_lolat']) {
@@ -272,10 +272,10 @@ export class Model extends React.Component {
         <div id='main-panel'>
             <div className="top-bar">
                 <div className="control-container">
+                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
                     <ModelControls title="Circulation" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
-                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
                     <RadiativeForcing pCO2_atmos={this.state.now.pCO2_atmos} pCO2_atmos_noExch={this.state.now.pCO2_atmos_noExch}/>
                 </div>
             </div>
