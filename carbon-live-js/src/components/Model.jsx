@@ -280,8 +280,18 @@ export class Model extends React.Component {
                 </div>
             </div>
             <div className='main-display'>
-                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={this.state.npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect } 
-                           plot_hilat={this.state.plot_hilat} plot_lolat={this.state.plot_lolat} plot_deep={this.state.plot_deep}/>
+                <Schematic 
+                    param={this.state.schematicParam} 
+                    data={this.state.history} 
+                    fluxes={this.state.fluxes} 
+                    // ocean_vars={this.state.ocean_vars} 
+                    npoints={this.state.npoints} 
+                    var_info={var_info} 
+                    // handleDropdownSelect={this.handleDropdownSelect } 
+                    plot_hilat={this.state.plot_hilat} 
+                    plot_lolat={this.state.plot_lolat} 
+                    plot_deep={this.state.plot_deep}
+                />
             </div>
             <div className="bottom-bar">
                 <div id="plot-controls">
