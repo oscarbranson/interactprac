@@ -111,11 +111,6 @@ hr {
   background-color: #6d3737;
 }
 
-.disasters .button {
-  background-color: #282c34;
-  border-color: #8791a5;
-}
-
 .disasters button:hover{
   background-color: #7e2711;
   border-color: #ff0000;
@@ -134,10 +129,9 @@ hr {
   font-size: calc(7px + 0.9vmin);
 }
 
-
 .control-section h2 {
   font-size: calc(3px + 1.5vmin);
-  text-align: left;
+  text-align: center;
   margin: 0.2vh 0px 0 0.3vw;
   min-height: 2vh;
 }
@@ -152,6 +146,7 @@ hr {
   min-width: 7vmin;
   max-width: 12vmin;
   border-radius: 5px;
+  padding: 1px;
 }
 .control-set h3 {
   font-size: calc(7px + 0.9vmin);
