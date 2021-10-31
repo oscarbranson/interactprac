@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
-import { Disasters, ModelControls } from './ModelControls'
+import { Disasters, ModelControls, RadiativeForcing } from './ModelControls'
 import { Schematic } from './Schematic';
 import { ParamToggle } from './ParamButtons';
 import {calc_Ks, GtC2uatm, uatm2GtC} from './csys'
@@ -43,12 +43,12 @@ export class Model extends React.Component {
         this.state['schematicParam'] = 'pCO2'
         
         // Model Params
-        this.state['model_global_params'] = ['vmix', 'vthermo'] 
+        this.state['model_global_params'] = ['vmix', 'vcirc'] 
         this.state['model_hilat_params'] = ['tau_hilat', 'percent_CaCO3_hilat', 'temp_hilat']
         this.state['model_lolat_params'] = ['tau_lolat', 'percent_CaCO3_lolat', 'temp_lolat']
 
         //   Default plot setup
-        this.state['ocean_vars'] = ['pCO2', 'DIC', 'TA', 'pH', 'CO3', 'HCO3', 'PO4'];
+        this.state['ocean_vars'] = ['pCO2', 'DIC', 'pH', 'CO3', 'HCO3', 'CO2'];
         this.state['plot_atmos'] = ['pCO2_atmos',];
         this.state['plot_ocean'] = ['pCO2']
         for (let box of ['_deep', '_hilat', '_lolat']) {
@@ -272,15 +272,26 @@ export class Model extends React.Component {
         <div id='main-panel'>
             <div className="top-bar">
                 <div className="control-container">
-                    <ModelControls title="Global" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
+                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
+                    <ModelControls title="Circulation" params={this.state.model_global_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="High Latitude" params={this.state.model_hilat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
                     <ModelControls title="Low Latitude" params={this.state.model_lolat_params} now={this.state.now} handleUpdate={this.handleParamUpdate}/>
-                    <Disasters handleVolcano={this.handleVolcano} handleEmissions={this.toggleEmissions} GtC_released={this.state.GtC_released}/>
+                    <RadiativeForcing pCO2_atmos={this.state.now.pCO2_atmos} pCO2_atmos_noExch={this.state.now.pCO2_atmos_noExch}/>
                 </div>
             </div>
             <div className='main-display'>
-                <Schematic param={this.state.schematicParam} data={this.state.history} fluxes={this.state.fluxes} ocean_vars={this.state.ocean_vars} npoints={this.state.npoints} var_info={var_info} handleDropdownSelect={this.handleDropdownSelect } 
-                           plot_hilat={this.state.plot_hilat} plot_lolat={this.state.plot_lolat} plot_deep={this.state.plot_deep}/>
+                <Schematic 
+                    param={this.state.schematicParam} 
+                    data={this.state.history} 
+                    fluxes={this.state.fluxes} 
+                    // ocean_vars={this.state.ocean_vars} 
+                    npoints={this.state.npoints} 
+                    var_info={var_info} 
+                    // handleDropdownSelect={this.handleDropdownSelect } 
+                    plot_hilat={this.state.plot_hilat} 
+                    plot_lolat={this.state.plot_lolat} 
+                    plot_deep={this.state.plot_deep}
+                />
             </div>
             <div className="bottom-bar">
                 <div id="plot-controls">

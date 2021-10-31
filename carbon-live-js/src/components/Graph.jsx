@@ -6,32 +6,23 @@ export class Graph extends Component {
     super(props);
     this.interval = null;
     this.graph = {};
-    this.state = {
-      ymin: Infinity,
-      ymax: -Infinity,
-    };
 
-    for (let v of this.props.variables) {
-      let info = this.props.var_info[v];
-      if (info['ymin'] < this.state.ymin) {this.state.ymin = info['ymin']};
-      if (info['ymax'] > this.state.ymax) {this.state.ymax = info['ymax']};
-    }
     this.graph.data = this.make_data();
   }
 
-  getLimits(pad) {
+  getYLimits(pad) {
     let mn = Infinity;
     let mx = -Infinity;
-    for (let i in this.props.variables) {
-      let imn = d3.min(this.props.data[this.props.variables[i]]);
-      let imx = d3.max(this.props.data[this.props.variables[i]]);
-
-      if (mn > imn) {mn = imn}
-      if (mx < imx) {mx = imx}
+    for (let d of this.graph.data) {
+      for (let v of d) {
+        if (v[1] < mn) { mn = v[1] }
+        if (v[1] > mx) { mx = v[1] }
+      }
     }
-
-    if (mn > this.state.ymin) {mn = this.state.ymin};
-    if (mx < this.state.ymax) {mx = this.state.ymax};
+    for (let v of this.props.variables) {
+      if (mn > this.props.var_info[v]['ymin']) { mn = this.props.var_info[v]['ymin']}
+      if (mx < this.props.var_info[v]['ymax']) { mx = this.props.var_info[v]['ymax']}
+    }
     let rn = mx - mn;
     if (rn === 0) {
       rn = 10;
@@ -72,7 +63,7 @@ export class Graph extends Component {
       .range([0, width]);
 
     this.graph.yScale = d3.scaleLinear()
-      .domain(this.getLimits(0.05))
+      .domain(this.getYLimits(0.05))
       .range([height, 0]);
 
     this.graph.svg = d3.select("#" + this.props.id)
@@ -90,11 +81,11 @@ export class Graph extends Component {
     this.graph.xAxis = d3.axisBottom(this.graph.xScale).ticks(2)
     this.graph.svg.append('g')
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + 65 + ")")
+      .attr("transform", "translate(0," + (100 - axis_bottom + margin + 1) + ")")
       .call(this.graph.xAxis)
 
     this.graph.lines = []
-    for (let i in this.props.variables) {
+    for (let v of this.props.variables) {
       this.graph.lines.push(
         d3.line()
         .x((d) => this.graph.xScale(d[0]))
@@ -105,22 +96,20 @@ export class Graph extends Component {
     for (let i in this.graph.data) {
       this.graph.svg.append('path')
         .attr('id', 'dataline')
-        .attr('id', this.props.variables[i])
+        .attr('id', this.props.id + i)
         .attr('d', this.graph.lines[i](this.graph.data[i]))
     }
   }
 
   updateLine() {
-    this.graph.data = this.make_data();
-    
     for (let i in this.graph.data) {
-      this.graph.svg.selectAll('path#' + this.props.variables[i])
+      this.graph.svg.selectAll('path#' + this.props.id + i)
       .attr('d', this.graph.lines[i](this.graph.data[i]))
     }
   }
 
   updateYlim() {
-    this.graph.yScale.domain(this.getLimits(0.05))
+    this.graph.yScale.domain(this.getYLimits(0.05))
     this.graph.yAxis.scale(this.graph.yScale)
     d3.select("#" + this.props.id).select('.y').call(this.graph.yAxis)
   }
@@ -140,6 +129,7 @@ export class Graph extends Component {
   }
 
   componentDidUpdate() {
+    this.graph.data = this.make_data();
     this.updateXlim()
     this.updateYlim()
     this.updateLine()

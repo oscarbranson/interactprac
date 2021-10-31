@@ -11,19 +11,22 @@ function fmt_pre(value, precision) {
     return value.toPrecision(precision)
 }
 
+function fmt_fix(value, decimals) {
+    return value.toFixed(decimals)
+}
 const paramFormats = {
-    vthermo: [fmt_sci, 2, start_state.vthermo * 0.5, start_state.vthermo * 2],
-    vmix: [fmt_sci, 2, start_state.vmix * 0.5, start_state.vmix * 2],
-    tau_hilat: [fmt_pre, 2, 1, 80],
-    tau_lolat: [fmt_pre, 2, 1, 80],
+    vcirc: [fmt_sci, 1, start_state.vcirc * 0.5, start_state.vcirc * 2],
+    vmix: [fmt_sci, 1, start_state.vmix * 0.5, start_state.vmix * 2],
+    tau_hilat: [fmt_pre, 2, 30, 100],
+    tau_lolat: [fmt_pre, 2, 1, 10, 0.1],
     percent_CaCO3_hilat: [fmt_pre, 2, 0, 50],
     percent_CaCO3_lolat: [fmt_pre, 2, 0, 50],
-    temp_hilat: [fmt_pre, 2, 0, 10],
-    temp_lolat: [fmt_pre, 2, 20, 30]
+    temp_hilat: [fmt_fix, 1, 0, 10, 0.1],
+    temp_lolat: [fmt_fix, 1, 20, 30, 0.1]
 }
 
 const sliderLabels = {
-    vthermo: {[start_state.vthermo]: '', [start_state.vthermo * 2]: 'x2', [start_state.vthermo / 2]: '/2'},
+    vcirc: {[start_state.vcirc]: '', [start_state.vcirc * 2]: 'x2', [start_state.vcirc / 2]: '/2'},
     vmix: {[start_state.vmix]: '', [start_state.vmix * 2]: 'x2', [start_state.vmix / 2]: '/2'},
     tau_hilat: {[start_state.tau_hilat]: ''},
     tau_lolat: {[start_state.tau_lolat]: ''},
@@ -39,7 +42,7 @@ const slidersteps = {
 }
 
 const labels = {
-    vthermo: 'V<sub>thermo</sub>',
+    vcirc: 'V<sub>circ</sub>',
     vmix: 'V<sub>mix</sub>',
     tau_hilat: '&tau;',
     tau_lolat: '&tau;',
@@ -72,11 +75,12 @@ export class ControlSet extends React.Component {
     render () {
         let min = paramFormats[this.props.param][2];
         let max = paramFormats[this.props.param][3];
+        let stepsize = paramFormats[this.props.param][4];
 
         return (
             <div className="control-set">
                 <h3 dangerouslySetInnerHTML={{__html: labels[this.props.param]}}></h3>
-                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]} step={slidersteps[this.props.param]}/>
+                <VerticalSlider value={this.props.value} min={min} max={max} handleChange={this.handleSliderChange} fmt_info={paramFormats[this.props.param]} labels={sliderLabels[this.props.param]} step={stepsize}/>
                 <div className="control-value">
                 {paramFormats[this.props.param][0](this.props.value, paramFormats[this.props.param][1])}
                 </div>
@@ -94,13 +98,23 @@ export class Disasters extends React.Component {
             emitLabel: 'Burn!'
         }
     
-        this.handleVolcano = this.handleVolcano.bind(this)
+        this.handleStHelens = this.handleStHelens.bind(this)
+        this.handlePinatubo = this.handlePinatubo.bind(this)
+        // this.handleTambora = this.handleTambora.bind(this)
         this.handleEmissions = this.handleEmissions.bind(this)
     }
 
-    handleVolcano() {
-        this.props.handleVolcano(this.state.GtC_pinutubo)
+    handleStHelens() {
+        this.props.handleVolcano(0.01 * 0.272)
     }
+
+    handlePinatubo() {
+        this.props.handleVolcano(0.05 * 0.272)
+    }
+
+    // handleTambora() {
+    //     this.props.handleVolcano(0.05 * 0.272)
+    // }
 
     handleEmissions() {
         this.props.handleEmissions()
@@ -124,15 +138,71 @@ export class Disasters extends React.Component {
                 </div> */}
             </div>
             <div className="control-set">
-                <h3>Volcano</h3>
+                <h3>Volcanos</h3>
                 {/* <VerticalSlider/> */}
                 {/* <Button size="sm">St. Helens</Button> */}
-                <Button onClick={this.handleVolcano} size="sm">Pinatubo</Button>
+                <Button onClick={this.handleStHelens} size="sm">St. Helens</Button>
+                <Button onClick={this.handlePinatubo} size="sm">Pinatubo</Button>
+                {/* <Button onClick={this.handleVolcano} size="sm">Tambora</Button> */}
             </div>
             </div>
         </div>
         )
     }
+}
+
+const climate_sensitivity = 2.5;  // degrees C per doubling CO2
+
+function calc_deltaF(pCO2) {
+    return 5.35 * Math.log(pCO2 / start_state.pCO2_atmos)
+}
+
+function calc_deltaT(pCO2) {
+    return climate_sensitivity * pCO2 / start_state.pCO2_atmos - climate_sensitivity
+}
+
+export class RadiativeForcing extends React.Component {
+    render () {
+        return (
+        <div className="control-section forcing" style={{zIndex: 5}}>
+            <h2>Climate: Radiative Forcing </h2>
+            <div className="model-controls">
+            <div className='control-set table'>
+                {/* titles */}
+                <div className="table cell title"></div>
+                <div className="table cell head">No Ocean</div>
+                <div className="table cell head">With Ocean</div>
+                <div className="table cell title"></div>
+                {/* Row 1 - pCO2 */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "pCO<sub>2</sub>"}}>
+                </div>
+                <div className="table cell"> {this.props.pCO2_atmos_noExch.toFixed(1)}</div>
+                <div className="table cell"> {this.props.pCO2_atmos.toFixed(1)}</div>
+                <div className="table cell unit">ppm</div>
+                {/* Row 2 - Delta F */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "\u0394F"}}>
+                </div>
+                <div className="table cell"> {calc_deltaF(this.props.pCO2_atmos_noExch).toFixed(1)}</div>
+                <div className="table cell"> {calc_deltaF(this.props.pCO2_atmos).toFixed(1)}</div>
+                <div className="table cell unit" dangerouslySetInnerHTML={{__html: "W m<sup>-2</sup>"}}></div>
+                {/* Row 3 - Delta T */}
+                <div 
+                    className="table cell title" 
+                    dangerouslySetInnerHTML={{__html: "\u0394T"}}>
+                </div>
+                <div className="table cell"> {calc_deltaT(this.props.pCO2_atmos_noExch).toFixed(1)}</div>
+                <div className="table cell"> {calc_deltaT(this.props.pCO2_atmos).toFixed(1)}</div>
+                <div className="table cell unit" dangerouslySetInnerHTML={{__html: "\u2103"}}></div>
+            </div>
+            </div>
+        </div>
+        )
+    }
+
 }
 
 

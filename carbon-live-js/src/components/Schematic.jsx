@@ -5,9 +5,12 @@ import { Graph } from './Graph';
 
 const divid = "threebox"
 
-const flux_labels = ['CO<sub>2</sub>', '[PO<sub>4</sub>]', '[DIC]', 'Alkalinity']
-const flux_colors = ["#888e9b", "#d3ca98", "#e98787", "#e7abef"]  // CO2, PO4, DIC, TA
+// const flux_labels = ['CO<sub>2</sub>', '[PO<sub>4</sub>]', '[DIC]', 'Alkalinity']
+// const flux_colors = ["#888e9b", "#d3ca98", "#e98787", "#e7abef"]  // CO2, PO4, DIC, TA
 // const plot_bkg = "black"
+
+const flux_labels = ['CO<sub>2</sub> Exchange', 'Thermohaline Circulation', 'Vertical Mixing', 'Biological Export'];
+const flux_colors = ['#888e9b', '#5369dcff', '#202080ff', '#307f2aff'];
 
 export class Box extends Component {
   render() {
@@ -104,7 +107,7 @@ export class Schematic extends Component {
         </div>
       )
     }
-    // console.log([this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_deep[ind]])
+    // console.log([this.props.fluxes.vcirc_PO4_hilat / this.props.data.vol_deep[ind]])
     return (
       <div className="schematic-container">
       <div className="schematic" id={divid}>
@@ -188,60 +191,61 @@ export class Schematic extends Component {
         <Fluxes fluxes={[moles2GtC(-this.props.fluxes.exCO2_lolat)]} sizes={[0.3]} centre={[70, 20]} colors={[flux_colors[0]]} label='Gas exch.' id='gas'/>
         {/* Thermohaline Mixing */}
         <Fluxes 
-          fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
-          centre={[32, 60]}
-          colors={flux_colors.slice(1)}
-          label="V<sub>thermo</sub>"
+          fluxes={[this.props.fluxes.vcirc_DIC_deep / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
+          centre={[35, 55]}
+          colors={[flux_colors[1]]}
+          label="V<sub>circ</sub>"
+          id='hideep'
           />
         <Fluxes 
-          fluxes={[this.props.fluxes.vthermo_PO4_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_lolat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_lolat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
-          centre={[43, 50]}
-          colors={flux_colors.slice(1)}
-          label="V<sub>thermo</sub>"
+          fluxes={[this.props.fluxes.vcirc_DIC_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
+          centre={[39, 50]}
+          colors={[flux_colors[1]]}
+          label="V<sub>circ</sub>"
           />
         <Fluxes 
-          fluxes={[this.props.fluxes.vthermo_PO4_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_DIC_hilat / this.props.data.vol_ocean[ind], this.props.fluxes.vthermo_TA_hilat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
+          fluxes={[this.props.fluxes.vcirc_DIC_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
           centre={[35, 42]} 
-          colors={flux_colors.slice(1)}
-          id='lohi' 
-          label="V<sub>thermo</sub>"
+          colors={[flux_colors[1]]}
+          label="V<sub>circ</sub>"
+          id='lohi'
           />
         {/* Diffusive Mixing */}
         <Fluxes 
-          fluxes={[-this.props.fluxes.vmix_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_hilat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
+          fluxes={[-this.props.fluxes.vmix_DIC_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
           centre={[24, 60]}
-          colors={flux_colors.slice(1)}
+          colors={[flux_colors[2]]}
           label="V<sub>mix</sub>"
           />
         <Fluxes 
-          fluxes={[-this.props.fluxes.vmix_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.vmix_TA_lolat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
-          centre={[56, 50]}
-          colors={flux_colors.slice(1)}
+          fluxes={[-this.props.fluxes.vmix_DIC_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
+          centre={[54, 50]}
+          colors={[flux_colors[2]]}
           label="V<sub>mix</sub>"
           />
         {/* Productivity */}
         <Fluxes 
-          fluxes={[-this.props.fluxes.prod_PO4_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_hilat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_hilat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
+          fluxes={[-this.props.fluxes.prod_DIC_hilat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
           centre={[16, 60]}
-          colors={flux_colors.slice(1)}
+          colors={[flux_colors[3]]}
           label="&tau;"
           />
         <Fluxes 
-          fluxes={[-this.props.fluxes.prod_PO4_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_DIC_lolat / this.props.data.vol_ocean[ind], -this.props.fluxes.prod_TA_lolat / this.props.data.vol_ocean[ind]]}
-          sizes={[0.001, 0.1, 0.05]}
+          fluxes={[-this.props.fluxes.prod_DIC_lolat / this.props.data.vol_ocean[ind]]}
+          sizes={[0.1]}
           centre={[64, 50]}
-          colors={flux_colors.slice(1)}
+          colors={[flux_colors[3]]}
           label="&tau;"
           />
 
         <div className='legend box'>
-          <h3>Net Fluxes</h3>
+          <h3>Net DIC Fluxes</h3>
           {legend}
         </div>
       
@@ -256,7 +260,7 @@ class Fluxes extends Component {
     super(props)
 
     this.state = {
-      arrowWidthPercent: 1,
+      arrowWidthPercent: 3,
       arrowHeightPercent: 10,
     }
 
@@ -310,8 +314,8 @@ class Arrow extends Component {
 
   render() {
     let arrowStyle = {
-      width: "95%",
-      left: "0%",
+      width: "33%",
+      // left: "0%",
       backgroundColor: this.props.color
     }
     if (this.props.direction >= 0) {
