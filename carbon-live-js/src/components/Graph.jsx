@@ -57,7 +57,7 @@ export class Graph extends Component {
       
     var height = svg_height - axis_bottom - margin,
         width = svg_width - axis_left - margin;
-
+      
     this.graph.xScale = d3.scaleLinear()
       .domain([-this.props.npoints, 0])
       .range([0, width]);
@@ -81,7 +81,7 @@ export class Graph extends Component {
     this.graph.xAxis = d3.axisBottom(this.graph.xScale).ticks(2)
     this.graph.svg.append('g')
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + (100 - axis_bottom + margin + 1) + ")")
+      .attr("transform", "translate(0," + height + ")")
       .call(this.graph.xAxis)
 
     this.graph.lines = []
