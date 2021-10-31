@@ -20,7 +20,7 @@ export class Box extends Component {
       height: this.props.pos[3] + '%',
       backgroundColor: this.props.color
     }}>
-      <div className='box-value' id={this.props.id}>{this.props.value}</div>
+      <div className='box-value' id={this.props.id} dangerouslySetInnerHTML={{__html: this.props.value}}></div>
       <div className='box-label' id={this.props.id}>{this.props.label + ': ' + this.props.GtC.toFixed(0) + ' GtC'}</div>
     </div>
     )
@@ -113,7 +113,7 @@ export class Schematic extends Component {
           id='atmos'
           pos = {[0, 80, 100, 20]}
           color = "white"
-          value = {"pCO2: " + val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}
+          value = {"pCO<sub>2</sub>: " + val_atmos.toPrecision(this.props.var_info['pCO2_atmos']['precision'])}
           label = "Atmosphere"
           GtC = {GtC_atmos}
         />
