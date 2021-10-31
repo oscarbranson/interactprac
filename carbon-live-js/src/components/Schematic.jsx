@@ -24,7 +24,10 @@ export class Box extends Component {
       backgroundColor: this.props.color
     }}>
       <div className='box-value' id={this.props.id} dangerouslySetInnerHTML={{__html: this.props.value}}></div>
-      <div className='box-label' id={this.props.id}>{this.props.label + ': ' + this.props.GtC.toFixed(0) + ' GtC'}</div>
+      <div className='box-label' id={this.props.id}>
+        <div id={this.props.id}>{this.props.label}</div>
+        <div id={this.props.id}>{this.props.GtC.toFixed(0) + ' GtC'}</div>
+      </div>
     </div>
     )
   }
