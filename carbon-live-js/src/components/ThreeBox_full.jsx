@@ -288,8 +288,8 @@ export const var_info = {
     },
     'pH_deep': {
         label: 'pH',
-        ymin: 7.5,
-        ymax: 8.5,
+        ymin: 7.9,
+        ymax: 8.15,
         precision: 3
     },
     'fCO2_deep': {
@@ -324,8 +324,8 @@ export const var_info = {
     },
     'pH_hilat': {
         label: 'pH',
-        ymin: 7.5,
-        ymax: 8.5,
+        ymin: 7.9,
+        ymax: 8.15,
         precision: 3
     },
     'fCO2_hilat': {
@@ -360,8 +360,8 @@ export const var_info = {
     },
     'pH_lolat': {
         label: 'pH',
-        ymin: 7.5,
-        ymax: 8.5,
+        ymin: 7.9,
+        ymax: 8.15,
         precision: 3
     },
     'fCO2_lolat': {
