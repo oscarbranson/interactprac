@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/interactprac/static/css/main.ffc0e5bc.chunk.css",
-    "main.js": "/interactprac/static/js/main.7a2479ce.chunk.js",
-    "main.js.map": "/interactprac/static/js/main.7a2479ce.chunk.js.map",
+    "main.js": "/interactprac/static/js/main.a0a218b2.chunk.js",
+    "main.js.map": "/interactprac/static/js/main.a0a218b2.chunk.js.map",
     "runtime-main.js": "/interactprac/static/js/runtime-main.cc629ad0.js",
     "runtime-main.js.map": "/interactprac/static/js/runtime-main.cc629ad0.js.map",
     "static/css/2.1242a92f.chunk.css": "/interactprac/static/css/2.1242a92f.chunk.css",
     "static/js/2.cb13bf80.chunk.js": "/interactprac/static/js/2.cb13bf80.chunk.js",
     "static/js/2.cb13bf80.chunk.js.map": "/interactprac/static/js/2.cb13bf80.chunk.js.map",
     "index.html": "/interactprac/index.html",
-    "precache-manifest.473e91ab2c98a66d0edba111745b7b17.js": "/interactprac/precache-manifest.473e91ab2c98a66d0edba111745b7b17.js",
+    "precache-manifest.adf61e1aa5e35d1cadd261ba9c8d9550.js": "/interactprac/precache-manifest.adf61e1aa5e35d1cadd261ba9c8d9550.js",
     "service-worker.js": "/interactprac/service-worker.js",
     "static/css/2.1242a92f.chunk.css.map": "/interactprac/static/css/2.1242a92f.chunk.css.map",
     "static/css/main.ffc0e5bc.chunk.css.map": "/interactprac/static/css/main.ffc0e5bc.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.1242a92f.chunk.css",
     "static/js/2.cb13bf80.chunk.js",
     "static/css/main.ffc0e5bc.chunk.css",
-    "static/js/main.7a2479ce.chunk.js"
+    "static/js/main.a0a218b2.chunk.js"
   ]
 }
